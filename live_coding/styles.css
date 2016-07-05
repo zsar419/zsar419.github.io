@@ -1,0 +1,29 @@
+#js {
+	width:700px;
+	margin: 10px auto;
+	background: rgba(255, 255, 255, 0.8);
+    white-space: pre;
+	padding: 1% 2%;
+	border-radius: 10px 20px;
+	box-shadow: 0px 0px 10px yellow;
+
+	position: absolute;
+	top: 50;
+	right: 0;
+	left: 0;
+}
+#loadmenu{
+	margin: 10px 10px;
+	padding: 1% 2%;
+	position: absolute;
+	top: 50;
+	left: 0;
+	background: rgba(255, 255, 255, 0.8);
+	border-radius: 10px 20px;
+}
+body {
+	background: black;
+}
+h1 {
+    color: yellow;
+}

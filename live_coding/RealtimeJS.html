@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+		<link href="styles.css" rel=stylesheet type="text/css">
+		<!-- <script src="js/three.min.js"></script> -->
+		<!-- <script src="js/ObjectLoader.js"></script> -->
+		<script src="http://threejs.org/build/three.min.js"></script>
+		<script src="http://threejs.org/examples/js/loaders/OBJLoader.js"></script>
+		<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+		<script src="http://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+	</head>
+	<body>		
+		<h1><center>Live Coding ~ Real-time Javascript</center></h1>
+		<div id="canvas"></div>
+		<div id="js" style="display:block;" contenteditable>//alert('foo'); // edit me!</div>
+
+		<script>
+			function cleanResources(){
+				// Deleting previous script
+				var previousScript = document.getElementById("jsExecute");
+				previousScript.parentNode.removeChild(previousScript);
+				
+				// Clear canvas
+				document.getElementById("canvas").innerHTML = '';
+			}
+		
+			function loadfps(){
+				var script = document.createElement('script');
+				script.innerHTML = 'var stats = new Stats();'
+				+ 'var container = document.getElementById("canvas");'
+				+ 'container.appendChild( stats.domElement );'
+				+ 'function render2() {' + '\n'
+				+ 'requestAnimationFrame(render2);' + '\n'
+				+ 'stats.update();' + '\n'
+				+ '};' + '\n'
+				+ 'render2();';
+				document.body.appendChild( script );
+			}
+			function load1(){
+				js = document.getElementById('js');
+				js.innerHTML = 
+				"var scene = new THREE.Scene();" + '\n'
+				+ 'var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 1,10000);' + '\n'
+				+ 'var renderer = new THREE.WebGLRenderer();' + '\n'
+			}
+			
+			function load2(){
+				load1();
+				js = document.getElementById('js');
+				js.innerHTML+= '\n'+
+				"var container = document.getElementById('canvas');" + '\n'
+				+ 'renderer.setSize(window.innerWidth, window.innerHeight);' + '\n'
+				+ 'container.appendChild(renderer.domElement);' + '\n';
+			}
+			
+			function load3(){
+				load2();
+				js = document.getElementById('js');
+				js.innerHTML+= '\n'+
+				"var box = new THREE.Mesh(" + '\n'
+				+ '		new THREE.BoxGeometry(100,100,100),' + '\n'
+				+ '		new THREE.MeshBasicMaterial({color: 0xfffff, wireframe: true})' + '\n'
+				+ ')' + '\n'
+				+ 'scene.add(box);' + '\n';	
+			}
+			
+			function load4(){
+				load3();
+				js = document.getElementById('js');
+				js.innerHTML+= '\n'+
+				"camera.position.z = 500;" + '\n'
+				+ 'function render() {' + '\n'
+				+ '		requestAnimationFrame(render);' + '\n'
+				+ '		renderer.render(scene, camera);	' + '\n'
+				+ '}' + '\n'
+				+ 'render();' + '\n';	
+			}
+			
+			// Animate
+			function load5(){
+				load3();
+				js = document.getElementById('js');
+				js.innerHTML+= '\n'+
+				"camera.position.z = 500;" + '\n'
+				+ 'function render() {' + '\n'
+				+ '		requestAnimationFrame(render);' + '\n'
+				+ '		box.rotation.x += 0.01;' + '\n'
+				+ '		box.rotation.y += 0.01;' + '\n'
+				+ '		renderer.render(scene, camera);	' + '\n'
+				+ '}' + '\n'
+				+ 'render();' + '\n';	
+			}
+			
+			// Comparison with complex webgl code
+			function load6(){
+				cleanResources();
+				var script = document.createElement('script');
+				script.id = "jsExecute";
+				script.src = 'webgl_cube.js';
+				document.body.appendChild( script );
+				js = document.getElementById('js');
+				js.innerHTML = "// View webgl cube source for comparison" + '\n'
+				+ '// Add this in html <canvas width = "570" height = "570" id = "my_Canvas"></canvas>';
+			}
+			
+			// Loading DAE model
+			function load7(){
+				cleanResources();
+				var script = document.createElement('script');
+				script.id = "jsExecute";
+				script.src = 'model.js';
+				document.body.appendChild( script );
+				js = document.getElementById('js');
+				js.innerHTML = '// Run chrome with CORS';
+			}
+		
+			(function() {
+				var timer, js = document.getElementById('js'), delay = 1000;
+				// Executes code on key release after defined delay
+				js.onkeyup = function(event) {
+					if (typeof timer != "undefined") {
+						clearTimeout(timer);
+						timer = 0;
+					}
+					timer = setTimeout(executeCode, delay);
+				};
+				
+				// Function which allows code to be executed
+				function executeCode() {
+					cleanResources();
+					var script = document.createElement("script");
+					script.id = "jsExecute";
+					script.innerHTML = js.innerText
+					document.body.appendChild( script );
+					//console.log(js.innerText);
+				}
+			})();
+
+			document.onkeydown = checkKey;
+			function checkKey(e) {
+				e = e || window.event;
+				if (e.keyCode == '18'){	// Detect alt keypress
+					if(document.getElementById('js').style.display == 'none')
+						document.getElementById('js').style.display = 'block';
+					else document.getElementById('js').style.display = 'none';
+				}
+				
+				if (e.keyCode == '17'){	// Detect alt keypress
+					if(document.getElementById('loadmenu').style.display == 'none')
+						document.getElementById('loadmenu').style.display = 'block';
+					else document.getElementById('loadmenu').style.display = 'none';
+				}
+			}
+		</script>
+		
+		<div id="loadmenu">
+			<ul>
+				<a href='#' onclick="loadfps();"><li>FPS Display</li></a>
+				<a href='#' onclick="load1();"><li>Load 1</li></a>
+				<a href='#' onclick="load2();"><li>Load 2</li></a>
+				<a href='#' onclick="load3();"><li>Load 3</li></a>
+				<a href='#' onclick="load4();"><li>Load 4</li></a>
+				<a href='#' onclick="load5();"><li>Animate</li></a>
+				<br>
+				<a href='#' onclick="load6();"><li>Complex WebGL</li></a>
+				<br>
+				<a href='#' onclick="load7();"><li>Load Model</li></a>
+			</ul>
+			<p>By Zeeshan Sarwar</p>
+		</div>
+		<script id="jsExecute"></script>
+
+	</body>
+</html>
