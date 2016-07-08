@@ -13,88 +13,99 @@
 	<body>		
 		<h1><center>Live Coding ~ Real-time Javascript</center></h1>
 		<div id="canvas"></div>
-		<div id="js" style="display:block;" contenteditable>//alert('foo'); // edit me!</div>
+		<div id="js" style="display:block;" contenteditable>// ALT - toggles editor 
+// CTRL - Toggles code implementations</div>
 
 		<script>
+			
+			//var defaultCanvas = document.getElementById("canvas").innerHTML;
 			function cleanResources(){
+				// Delete last script
+				var deleteSetup = document.getElementById("setup");
+				deleteSetup.parentNode.removeChild(deleteSetup);
+				
 				// Deleting previous script
 				var previousScript = document.getElementById("jsExecute");
 				previousScript.parentNode.removeChild(previousScript);
 				
+				// Delete rendering script
+				var deleteRenderer = document.getElementById("rendering");
+				deleteRenderer.parentNode.removeChild(deleteRenderer);
+				
 				// Clear canvas
-				document.getElementById("canvas").innerHTML = '';
+				document.getElementById('canvas').innerHTML = '';
 			}
 		
 			function loadfps(){
 				var script = document.createElement('script');
-				script.innerHTML = 'var stats = new Stats();'
+				script.innerHTML = 
+				'var stats = new Stats();'
 				+ 'var container = document.getElementById("canvas");'
 				+ 'container.appendChild( stats.domElement );'
-				+ 'function render2() {' + '\n'
-				+ 'requestAnimationFrame(render2);' + '\n'
+				+ 'function renderFPS() {' + '\n'
+				+ 'requestAnimationFrame(renderFPS);' + '\n'
 				+ 'stats.update();' + '\n'
 				+ '};' + '\n'
-				+ 'render2();';
+				+ 'renderFPS();';
 				document.body.appendChild( script );
 			}
-			function load1(){
-				js = document.getElementById('js');
-				js.innerHTML = 
-				"var scene = new THREE.Scene();" + '\n'
+			
+			function setupScene(){
+				var setup = document.createElement('script');
+				setup.id = "setup";
+				setup.innerHTML =
+				'var scene = new THREE.Scene();' + '\n'
 				+ 'var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 1,10000);' + '\n'
 				+ 'var renderer = new THREE.WebGLRenderer();' + '\n'
-			}
-			
-			function load2(){
-				load1();
-				js = document.getElementById('js');
-				js.innerHTML+= '\n'+
-				"var container = document.getElementById('canvas');" + '\n'
 				+ 'renderer.setSize(window.innerWidth, window.innerHeight);' + '\n'
-				+ 'container.appendChild(renderer.domElement);' + '\n';
+				+ 'var container = document.getElementById("canvas");' + '\n'
+				+ 'container.appendChild(renderer.domElement);' + '\n'
+				+ 'function onRender(){};' + '\n'
+				document.body.appendChild( setup );
 			}
 			
-			function load3(){
-				load2();
+			function createRenderer(){
+				var rendering = document.createElement('script');
+				rendering.id = 'rendering';
+				rendering.innerHTML=
+				'function render() {' + '\n'
+				+ 'requestAnimationFrame(render);' + '\n'
+				+ 'onRender();' + '\n'
+				+ 'renderer.render(scene, camera);' + '\n'
+				+ '}' + '\n'
+				+ 'render();';
+				document.body.appendChild( rendering );
+			}
+			
+			// Create object
+			function load1(){
 				js = document.getElementById('js');
-				js.innerHTML+= '\n'+
+				js.innerHTML= '\n'+
 				"var box = new THREE.Mesh(" + '\n'
 				+ '		new THREE.BoxGeometry(100,100,100),' + '\n'
 				+ '		new THREE.MeshBasicMaterial({color: 0xfffff, wireframe: true})' + '\n'
 				+ ')' + '\n'
-				+ 'scene.add(box);' + '\n';	
+				+ 'scene.add(box);' + '\n';
 			}
-			
-			function load4(){
-				load3();
+			// Object Animation
+			function load2(){
+				load1();
 				js = document.getElementById('js');
 				js.innerHTML+= '\n'+
 				"camera.position.z = 500;" + '\n'
-				+ 'function render() {' + '\n'
-				+ '		requestAnimationFrame(render);' + '\n'
-				+ '		renderer.render(scene, camera);	' + '\n'
-				+ '}' + '\n'
-				+ 'render();' + '\n';	
-			}
-			
-			// Animate
-			function load5(){
-				load3();
-				js = document.getElementById('js');
-				js.innerHTML+= '\n'+
-				"camera.position.z = 500;" + '\n'
-				+ 'function render() {' + '\n'
-				+ '		requestAnimationFrame(render);' + '\n'
+				+ 'var onRender = function(){' + '\n'
 				+ '		box.rotation.x += 0.01;' + '\n'
 				+ '		box.rotation.y += 0.01;' + '\n'
-				+ '		renderer.render(scene, camera);	' + '\n'
-				+ '}' + '\n'
-				+ 'render();' + '\n';	
+				+ '}' + '\n';
 			}
 			
 			// Comparison with complex webgl code
-			function load6(){
-				cleanResources();
+			function load3(){
+				// Deleting previous script
+				var previousScript = document.getElementById("jsExecute");
+				previousScript.parentNode.removeChild(previousScript);
+				document.getElementById('canvas').innerHTML = '';
+				
 				var script = document.createElement('script');
 				script.id = "jsExecute";
 				script.src = 'webgl_cube.js';
@@ -105,8 +116,12 @@
 			}
 			
 			// Loading DAE model
-			function load7(){
-				cleanResources();
+			function load4(){
+				// Deleting previous script
+				var previousScript = document.getElementById("jsExecute");
+				previousScript.parentNode.removeChild(previousScript);
+				document.getElementById('canvas').innerHTML = '';
+				
 				var script = document.createElement('script');
 				script.id = "jsExecute";
 				script.src = 'model.js';
@@ -129,11 +144,16 @@
 				// Function which allows code to be executed
 				function executeCode() {
 					cleanResources();
+					setupScene();
 					var script = document.createElement("script");
 					script.id = "jsExecute";
-					script.innerHTML = js.innerText
-					document.body.appendChild( script );
-					//console.log(js.innerText);
+					script.innerHTML = js.innerText;
+					document.body.appendChild(script);
+					
+					createRenderer();
+					
+					//var renderer = document.getElementById('rendering');
+					//document.body.insertBefore(script, renderer);
 				}
 			})();
 
@@ -151,25 +171,31 @@
 						document.getElementById('loadmenu').style.display = 'block';
 					else document.getElementById('loadmenu').style.display = 'none';
 				}
+				
+				if(e.keyCode == '9') {
+					document.execCommand('styleWithCSS', true, null);
+					document.execCommand('indent', true, null);
+					if(e.preventDefault){
+						e.preventDefault()
+					}
+				}
 			}
 		</script>
 		
 		<div id="loadmenu">
 			<ul>
 				<a href='#' onclick="loadfps();"><li>FPS Display</li></a>
-				<a href='#' onclick="load1();"><li>Load 1</li></a>
-				<a href='#' onclick="load2();"><li>Load 2</li></a>
-				<a href='#' onclick="load3();"><li>Load 3</li></a>
-				<a href='#' onclick="load4();"><li>Load 4</li></a>
-				<a href='#' onclick="load5();"><li>Animate</li></a>
+				<a href='#' onclick="load1();"><li>Create Cube</li></a>
+				<a href='#' onclick="load2();"><li>Animate Cube</li></a>
 				<br>
-				<a href='#' onclick="load6();"><li>Complex WebGL</li></a>
+				<a href='#' onclick="load3();"><li>Complex WebGL</li></a>
 				<br>
-				<a href='#' onclick="load7();"><li>Load Model</li></a>
+				<a href='#' onclick="load4();"><li>Load Model</li></a>
 			</ul>
 			<p>By Zeeshan Sarwar</p>
 		</div>
+		<script id="setup"></script>
 		<script id="jsExecute"></script>
-
+		<script id="rendering"></script>
 	</body>
 </html>

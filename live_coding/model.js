@@ -35,24 +35,6 @@ loader.load('sketchup-demo.dae', function ( collada ) {
 	// Function called when download progresses
 	function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
 );
-//*/
-
-/*var loader = new THREE.ObjectLoader();
-loader.load("untitled2.json", function ( object ) {
-	object.scale.x = 10;
-	object.scale.y = 10;
-	//object.scale.z = 10;
-	obj = object;
-	scene.add( obj );
-});*/
-
-var obj2;
-var loader3 = new THREE.ObjectLoader();
-loader3.load( "model.json", function( object2 ) {
-	obj2 = object2;
-	obj2.scale.set(30,30,30);
-	scene.add(obj2);
-} );
 
 var box = new THREE.Mesh(
 	new THREE.BoxGeometry(100,100,100),
