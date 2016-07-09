@@ -78,21 +78,43 @@
 			}
 			
 			// Create object
-			function load1(){
+			function createCube(){
 				js = document.getElementById('js');
-				js.innerHTML= '\n'+
-				"var box = new THREE.Mesh(" + '\n'
+				js.innerHTML= '// Setup scene, camera, renderer' + '\n' + '\n'
+				+ "var box = new THREE.Mesh(" + '\n'
 				+ '		new THREE.BoxGeometry(100,100,100),' + '\n'
 				+ '		new THREE.MeshBasicMaterial({color: 0xfffff, wireframe: true})' + '\n'
 				+ ')' + '\n'
 				+ 'scene.add(box);' + '\n';
 			}
+			
 			// Object Animation
-			function load2(){
-				load1();
+			function animateCube(){
+				createCube();
 				js = document.getElementById('js');
 				js.innerHTML+= '\n'+
 				"camera.position.z = 500;" + '\n'
+				+ 'var onRender = function(){' + '\n'
+				+ '		box.rotation.x += 0.01;' + '\n'
+				+ '		box.rotation.y += 0.01;' + '\n'
+				+ '}' + '\n';
+			}
+			
+			// Object Illumination
+			function illuminate(){
+				js = document.getElementById('js');
+				js.innerHTML= '// Setup scene, camera, renderer' + '\n' + '\n'
+				+ "var box = new THREE.Mesh(" + '\n'
+				+ '		new THREE.BoxGeometry(100,100,100),' + '\n'
+				+ '		new THREE.MeshPhongMaterial()' + '\n'
+				+ ')' + '\n'
+				+ 'scene.add(box);' + '\n';
+				
+				js.innerHTML+= '\n'+
+				'var light = new THREE.PointLight(0x00ff00)' + '\n'
+				+ 'light.position.set(0,0,800);' + '\n'
+				+ 'scene.add(light)' + '\n' + '\n'
+				+ "camera.position.z = 500;" + '\n'
 				+ 'var onRender = function(){' + '\n'
 				+ '		box.rotation.x += 0.01;' + '\n'
 				+ '		box.rotation.y += 0.01;' + '\n'
@@ -117,8 +139,24 @@
 			
 			// Loading DAE model
 			function load4(){
+				js = document.getElementById('js');
+				js.innerHTML+= '\n'+
+				"var loader = new THREE.ColladaLoader();" + '\n'
+				+ 'loader.options.convertUpAxis = true;' + '\n'
+				+ 'loader.load("sketchup-demo.dae", function ( collada ) {' + '\n'
+				+ '		var dae = collada.scene;' + '\n'
+				+ '		dae.position.set(-500,0,0);' + '\n'
+				+ '		dae.scale.set(0.5,0.5,0.5);' + '\n'
+				+ '		scene.add(dae);' + '\n'
+				+ '},' + '\n'
+				+ 'function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + "% loaded" );}' + '\n'
+				+ ');' + '\n' + '\n'
+				+ 'var light = new THREE.DirectionalLight(0xffffff);' + '\n'
+				+ 'light.position.set(0, 0, 800);' + '\n'
+				+ 'scene.add(light);' + '\n' + '\n'
+				+ 'camera.position.z = 500;' + '\n';
 				// Deleting previous script
-				var previousScript = document.getElementById("jsExecute");
+				/*var previousScript = document.getElementById("jsExecute");
 				previousScript.parentNode.removeChild(previousScript);
 				document.getElementById('canvas').innerHTML = '';
 				
@@ -127,7 +165,7 @@
 				script.src = 'model.js';
 				document.body.appendChild( script );
 				js = document.getElementById('js');
-				js.innerHTML = '// Run chrome with CORS';
+				js.innerHTML = '// Run chrome with CORS';*/
 			}
 		
 			(function() {
@@ -185,8 +223,9 @@
 		<div id="loadmenu">
 			<ul>
 				<a href='#' onclick="loadfps();"><li>FPS Display</li></a>
-				<a href='#' onclick="load1();"><li>Create Cube</li></a>
-				<a href='#' onclick="load2();"><li>Animate Cube</li></a>
+				<a href='#' onclick="createCube();"><li>Create Cube</li></a>
+				<a href='#' onclick="animateCube();"><li>Animate Cube</li></a>
+				<a href='#' onclick="illuminate();"><li>Illuminate Cube</li></a>
 				<br>
 				<a href='#' onclick="load3();"><li>Complex WebGL</li></a>
 				<br>
