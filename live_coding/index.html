@@ -140,7 +140,7 @@
 			// Loading DAE model
 			function load4(){
 				js = document.getElementById('js');
-				js.innerHTML= '\n'+
+				js.innerHTML= '// Setup scene, camera, renderer' + '\n' + '\n'
 				"var loader = new THREE.ColladaLoader();" + '\n'
 				+ 'loader.options.convertUpAxis = true;' + '\n'
 				+ 'loader.load("sketchup-demo.dae", function ( collada ) {' + '\n'
