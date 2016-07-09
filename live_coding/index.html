@@ -140,7 +140,7 @@
 			// Loading DAE model
 			function load4(){
 				js = document.getElementById('js');
-				js.innerHTML+= '\n'+
+				js.innerHTML= '\n'+
 				"var loader = new THREE.ColladaLoader();" + '\n'
 				+ 'loader.options.convertUpAxis = true;' + '\n'
 				+ 'loader.load("sketchup-demo.dae", function ( collada ) {' + '\n'
@@ -155,17 +155,6 @@
 				+ 'light.position.set(0, 0, 800);' + '\n'
 				+ 'scene.add(light);' + '\n' + '\n'
 				+ 'camera.position.z = 500;' + '\n';
-				// Deleting previous script
-				/*var previousScript = document.getElementById("jsExecute");
-				previousScript.parentNode.removeChild(previousScript);
-				document.getElementById('canvas').innerHTML = '';
-				
-				var script = document.createElement('script');
-				script.id = "jsExecute";
-				script.src = 'model.js';
-				document.body.appendChild( script );
-				js = document.getElementById('js');
-				js.innerHTML = '// Run chrome with CORS';*/
 			}
 		
 			(function() {
