@@ -16,7 +16,8 @@
 		<h1><center>Live Coding ~ Real-time Javascript</center></h1>
 		<div id="canvas"></div>
 		<div id="js" style="display:block;" contenteditable>// ALT - toggles editor 
-// CTRL - Toggles code implementations</div>
+// CTRL - Toggles code implementations
+// ENTER - Executes code</div>
 
 		<script>
 			
@@ -168,33 +169,21 @@
 				js.innerHTML+= '\n'+
 				"var controls = new THREE.OrbitControls( camera, renderer.domElement );" + '\n';
 			}
-		
-			(function() {
-				var timer, js = document.getElementById('js'), delay = 1000;
-				// Executes code on key release after defined delay
-				js.onkeyup = function(event) {
-					if (typeof timer != "undefined") {
-						clearTimeout(timer);
-						timer = 0;
-					}
-					timer = setTimeout(executeCode, delay);
-				};
+			
+			function executeCode() {
+			// Function which allows code to be executed
+				cleanResources();
+				setupScene();
+				var script = document.createElement("script");
+				script.id = "jsExecute";
+				script.innerHTML = js.innerText;
+				document.body.appendChild(script);
 				
-				// Function which allows code to be executed
-				function executeCode() {
-					cleanResources();
-					setupScene();
-					var script = document.createElement("script");
-					script.id = "jsExecute";
-					script.innerHTML = js.innerText;
-					document.body.appendChild(script);
-					
-					createRenderer();
-					
-					//var renderer = document.getElementById('rendering');
-					//document.body.insertBefore(script, renderer);
-				}
-			})();
+				createRenderer();
+				
+				//var renderer = document.getElementById('rendering');
+				//document.body.insertBefore(script, renderer);
+			}
 
 			document.onkeydown = checkKey;
 			function checkKey(e) {
@@ -211,13 +200,19 @@
 					else document.getElementById('loadmenu').style.display = 'none';
 				}
 				
-				if(e.keyCode == '9') {
+				if(e.keyCode == '9') {	// Tab
 					document.execCommand('styleWithCSS', true, null);
 					document.execCommand('indent', true, null);
 					if(e.preventDefault){
 						e.preventDefault()
 					}
 				}
+				
+				if(e.keyCode == '13') {	// Enter
+					executeCode();
+				}
+				
+				
 			}
 		</script>
 		
