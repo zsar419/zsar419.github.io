@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>My first Three.js app</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+		<script src="http://threejs.org/build/three.min.js"></script>
+		<script src="http://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+		<script src="http://threejs.org/examples/js/controls/PointerLockControls.js"></script>
+		<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+		
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="styles.css" rel=stylesheet type="text/css">
+	</head>
+	
+	<body>
+		<script>
+			/*var script = document.createElement('script');
+			script.src = 'FPSCamera.js';
+			document.body.appendChild( script );	// */
+		</script>
+		<script>
+			// First Person Camera Controls
+			function lockPointer() {
+				// Functon called when click occurs
+				var pointerlockchange = function ( event ) {
+					if ( document.pointerLockElement === document.body ) {
+						controlsEnabled = true;
+						controls.enabled = true;
+					} else {	// Mouse outside of screen
+						controls.enabled = false;
+						//instructions.style.display = '';
+					}
+				};
+				// Hook pointer lock function to document
+				document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+				document.body.addEventListener( 'click', function ( event ) {
+					//instructions.style.display = 'none';
+					document.body.requestPointerLock();
+				}, false );
+			}
+			lockPointer();
+		
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 1,10000);
+			var renderer = new THREE.WebGLRenderer();
+			var controls = new THREE.PointerLockControls( camera );
+			scene.add( controls.getObject() );
+			var stats = new Stats();
+			document.body.appendChild( stats.domElement );
+			
+			// Set renderer settings
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.setClearColor( 0x1e90ff );	// Blue background
+			document.body.appendChild( renderer.domElement );
+			
+			// instantiate a loader
+			/*var loader = new THREE.ColladaLoader();
+			loader.options.convertUpAxis = true;
+			loader.load('sketchup-demo.dae', function ( collada ) {
+					var dae = collada.scene;
+					dae.position.set(-500,0,0);
+					dae.scale.set(0.5,0.5,0.5);
+					scene.add(dae);
+				},
+				// Function called when download progresses
+				function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
+			);
+			// */	
+			
+			var box = new THREE.Mesh(
+				new THREE.BoxGeometry(100,100,100),
+				new THREE.MeshPhongMaterial()
+			)
+			box.position.set(0,0,-500);
+			scene.add(box);
+			
+			var light = new THREE.DirectionalLight(0xffffff);
+			light.position.set( 0, 1000, 300);
+			scene.add(light);
+			
+			//camera.position.z = 500;
+			function render() {
+				requestAnimationFrame(render);
+				box.rotation.x += 0.01;
+				box.rotation.y += 0.01;
+				
+				stats.update();
+				renderer.render(scene, camera);	
+			};
+			render();
+		</script>
+	</body>
+</html>

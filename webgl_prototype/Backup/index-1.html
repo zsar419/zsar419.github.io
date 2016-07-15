@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+		<!-- <script src="js/three.min.js"></script> -->
+		<!-- <script src="js/ObjectLoader.js"></script> -->
+		<script src="http://threejs.org/build/three.min.js"></script>
+		
+		<script src="http://threejs.org/examples/js/loaders/DDSLoader.js"></script>
+		<script src="http://threejs.org/examples/js/loaders/MTLLoader.js"></script>
+		<script src="http://threejs.org/examples/js/loaders/OBJLoader.js"></script>
+		
+		<script src="http://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+		<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+		<script src="http://threejs.org/examples/js/controls/PointerLockControls.js"></script>
+		<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+	</head>
+	<body>
+		<div id="canvas"></div>
+		<canvas width = "570" height = "570" id = "my_Canvas"></canvas>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 1,10000);
+			var renderer = new THREE.WebGLRenderer();
+			//var controls = new THREE.PointerLockControls( camera, renderer.domElement );
+			var controls = new THREE.OrbitControls( camera, renderer.domElement );
+			var stats = new Stats();
+			//var container = document.createElement( 'div' );
+			var container = document.getElementById('canvas');
+			
+			
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			//document.body.appendChild( stats.domElement );
+			//document.body.appendChild( container );
+			container.appendChild(renderer.domElement);
+			container.appendChild( stats.domElement );
+			
+			// instantiate a loader
+			/*var loader = new THREE.ColladaLoader();
+			loader.options.convertUpAxis = true;
+			loader.load('sketchup-demo.dae', function ( collada ) {
+					var dae = collada.scene;
+					dae.position.set(-500,0,0);
+					dae.scale.set(0.5,0.5,0.5);
+					scene.add(dae);
+				},
+				// Function called when download progresses
+				function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
+			);
+			// */
+			
+			// ----------- Not working
+			/*var onProgress = function ( xhr ) {
+				if ( xhr.lengthComputable ) {
+					var percentComplete = xhr.loaded / xhr.total * 100;
+					console.log( Math.round(percentComplete, 2) + '% downloaded' );
+				}
+			};
+			var onError = function ( xhr ) { };
+			
+			THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+			var mtlLoader = new THREE.MTLLoader();
+			mtlLoader.setPath( 'OBJ_export/' );
+			mtlLoader.load( 'ModelObj.mtl', function( materials ) {
+				materials.preload();
+				var objLoader = new THREE.OBJLoader();
+				objLoader.setMaterials( materials );
+				objLoader.setPath( 'OBJ_export/' );
+				objLoader.load( 'ModelObj.obj', function ( object ) {
+					object.position.set(-500, 0, 0);
+					object.scale.set(1500,1500,1500);
+					scene.add( object );
+				}, onProgress, onError );
+			});
+			// --------------	 */		
+			
+			var box = new THREE.Mesh(
+				new THREE.BoxGeometry(100,100,100),
+				new THREE.MeshPhongMaterial()
+			)
+			scene.add(box);
+			
+			var light = new THREE.DirectionalLight(0xffffff);
+			light.position.set(0, 800, 0);
+			scene.add(light);
+			var hemiLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.6 ); 
+			hemiLight.position.set(0, 800, 0);
+			scene.add(hemiLight);
+			
+			camera.position.z = 500;
+			function render() {
+				requestAnimationFrame(render);
+				box.rotation.x += 0.01;
+				box.rotation.y += 0.01;
+				
+				stats.update();
+				renderer.render(scene, camera);	
+			};
+			render();
+		</script>
+	</body>
+</html>
