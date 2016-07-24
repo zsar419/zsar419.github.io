@@ -42,6 +42,30 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			renderer.setClearColor( 0x1e90ff );	// Blue background
 			document.body.appendChild( renderer.domElement );
+			var rays = [
+				new THREE.Vector3(0, 0, 1),
+				new THREE.Vector3(1, 0, 1),
+				new THREE.Vector3(1, 0, 0),
+				new THREE.Vector3(1, 0, -1),
+				new THREE.Vector3(0, 0, -1),
+				new THREE.Vector3(-1, 0, -1),
+				new THREE.Vector3(-1, 0, 0),
+				new THREE.Vector3(-1, 0, 1)
+				//new THREE.Vector3( 0, -1, 0 ),
+				//new THREE.Vector3( 0, 1, 0 )
+			];
+
+			function getCollisions(){	// Projects rays in al direction (from array)
+				for (i = 0; i < rays.length; i += 1){
+					raycaster.set( controls.getObject().position , rays[i]);
+					var intersections = raycaster.intersectObjects( scene.children, true );
+					if ( intersections.length ) {
+						console.log('hi');
+						return true;
+					}
+				}
+				return false;
+			}
 			
 			var model;
 			var loader = new THREE.ColladaLoader();
@@ -56,6 +80,8 @@
 					
 					// Set PC controls and load location data
 					addPCControls(model);
+					// Need recursive function to add all THREE.Mesh into array
+					
 					//loadLocation();
 				},
 				function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
@@ -74,7 +100,6 @@
 			scene.add(light);
 			
 			function getForwardCollision(){		// Project ray forward only
-				// Need to fix - user passes wall if foes too fast
 				var direction = camera.getWorldDirection();
 				var forward = new THREE.Vector3(direction.x, direction.y, direction.z);
 				raycaster.set( controls.getObject().position , forward);
@@ -91,6 +116,7 @@
 			
 				//box.rotation.x += 0.01;
 				//box.rotation.y += 0.01;
+				//getCollisions();
 				
 				renderPCMovement();
 				stats.update();

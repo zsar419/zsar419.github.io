@@ -99,8 +99,9 @@ function init() {
 		new THREE.BoxGeometry(100,100,100),
 		new THREE.MeshPhongMaterial()
 	)
-	box.position.set(0,0,-500);
+	box.position.set(0,-40,-100);
 	scene.add(box);
+	objects.push( box );
 	
 	
 	var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
@@ -109,6 +110,7 @@ function init() {
 	
 	// Colision checking (unimplemented)
 	raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
+	//raycaster.ray.origin.y = 10;
 	
 	// floor
 	/*geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
@@ -167,9 +169,9 @@ function onWindowResize() {
 
 function animate() {
 	requestAnimationFrame( animate );
-		if ( controlsEnabled ) {
+	if ( controlsEnabled ) {
 		raycaster.ray.origin.copy( controls.getObject().position );
-		raycaster.ray.origin.y -= 10;
+		//raycaster.ray.origin.y -= 10;
 		var intersections = raycaster.intersectObjects( objects );
 		var isOnObject = intersections.length > 0;
 		var time = performance.now();
@@ -182,12 +184,14 @@ function animate() {
 		if ( moveLeft ) velocity.x -= 400.0 * delta;
 		if ( moveRight ) velocity.x += 400.0 * delta;
 		if ( isOnObject === true ) {
+			console.log('hi');
 			velocity.y = Math.max( 0, velocity.y );
 			canJump = true;
 		}
 		controls.getObject().translateX( velocity.x * delta );
 		controls.getObject().translateY( velocity.y * delta );
 		controls.getObject().translateZ( velocity.z * delta );
+		// Does not fall too low
 		if ( controls.getObject().position.y < 10 ) {
 			velocity.y = 0;
 			controls.getObject().position.y = 10;

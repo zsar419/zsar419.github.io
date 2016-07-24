@@ -32,6 +32,7 @@
 			var controls = new THREE.PointerLockControls( camera );
 			
 			// Collision checking
+			var collidable = [];
 			var raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, 15 );
 			
 			scene.add( controls.getObject() );
@@ -42,6 +43,32 @@
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			renderer.setClearColor( 0x1e90ff );	// Blue background
 			document.body.appendChild( renderer.domElement );
+			var rays = [
+				new THREE.Vector3(0, 0, 1),
+				new THREE.Vector3(1, 0, 1),
+				new THREE.Vector3(1, 0, 0),
+				new THREE.Vector3(1, 0, -1),
+				new THREE.Vector3(0, 0, -1),
+				new THREE.Vector3(-1, 0, -1),
+				new THREE.Vector3(-1, 0, 0),
+				new THREE.Vector3(-1, 0, 1)
+				//new THREE.Vector3( 0, -1, 0 ),
+				//new THREE.Vector3( 0, 1, 0 )
+			];
+
+			function getCollisions(){	// Projects rays in al direction (from array)
+				for (i = 0; i < rays.length; i += 1){
+					raycaster.set( controls.getObject().position , rays[i]);
+					//raycaster.ray.origin.copy( controls.getObject().position );
+					var intersections = raycaster.intersectObjects( collidable );
+					var isOnObject = intersections.length > 0;
+					if ( isOnObject === true ) {
+						console.log('hi');
+						return true;
+					}
+				}
+				return false;
+			}
 			
 			var model;
 			var loader = new THREE.ColladaLoader();
@@ -56,6 +83,8 @@
 					
 					// Set PC controls and load location data
 					addPCControls(model);
+					// Need recursive function to add all THREE.Mesh into array
+					
 					//loadLocation();
 				},
 				function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
@@ -67,18 +96,18 @@
 			)
 			box.position.set(0,0,-100);
 			scene.add(box);
-			addPCControls(box); // */
+			addPCControls(box); 
+			collidable.push( box );// */
 			
 			var light = new THREE.DirectionalLight(0xffffff);
 			light.position.set( 0, 500, 300);
 			scene.add(light);
 			
 			function getForwardCollision(){		// Project ray forward only
-				// Need to fix - user passes wall if foes too fast
 				var direction = camera.getWorldDirection();
 				var forward = new THREE.Vector3(direction.x, direction.y, direction.z);
 				raycaster.set( controls.getObject().position , forward);
-				var intersections = raycaster.intersectObjects( scene.children, true );
+				var intersections = raycaster.intersectObjects( collidable );
 				if ( intersections.length > 0 === true ) {
 					console.log('hit');
 					return true;
@@ -91,6 +120,20 @@
 			
 				//box.rotation.x += 0.01;
 				//box.rotation.y += 0.01;
+				if(test){
+
+					/*for (var vertexIndex = 0; vertexIndex < model.geometry.vertices.length; vertexIndex++){		
+						var localVertex = model.geometry.vertices[vertexIndex].clone();
+						var globalVertex = localVertex.applyMatrix4( model.matrix );
+						var directionVector = globalVertex.sub( model.position );
+						
+						var ray = new THREE.Raycaster( controls.getObject().position, directionVector.clone().normalize() );
+						var collisionResults = ray.intersectObjects( collidable );
+						if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+							console.log('hit');
+					} */
+				}
+				getCollisions();
 				
 				renderPCMovement();
 				stats.update();
