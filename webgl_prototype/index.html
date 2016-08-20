@@ -1,124 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+	<head>
+		<title>WebVR Three.js</title>
+		<script src="ThreeJS/three.min.js"></script>
+		<script src="ThreeJS/ColladaLoader.js"></script>
+		<script src="ThreeJS/PointerLockControls.js"></script>
+		<script src="ThreeJS/stats.min.js"></script>
+		<script src="ThreeJS/dat.gui.js"></script>
+		<script src="Resources/data.js"></script>
+		<script src="Resources/controls.js"></script>
+		
+		
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="Resources/styles.css" rel=stylesheet type="text/css">
+	</head>
 
-<head>
-	<title>My first Three.js app</title>
-	<style>
-		canvas {
-			width: 100%;
-			height: 100%
-		}
-	</style>
-	<script src="http://threejs.org/build/three.min.js"></script>
-	<script src="http://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
-	<script src="http://threejs.org/examples/js/controls/PointerLockControls.js"></script>
-	<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+	<body>
+	</body>
 
-	<script src="Resources/controls.js"></script>
-
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<link href="Resources/styles.css" rel=stylesheet type="text/css">
-</head>
-
-<body>
-	<script>
-			/*var script = document.createElement('script');
-			script.src = 'FPSCamera.js';
-			document.body.appendChild( script );	// */
-		</script>
-
-	<script>
-			// First Person Camera Controls
-			lockMousePointer();
-			
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 1,10000);
-			var renderer = new THREE.WebGLRenderer({ antialias: true });
-
-
-
-			var controls = new THREE.PointerLockControls( camera );
-			
-			// Collision checking
-			var raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, 15 );
-			// 2nd Raycaster can make it computationally intensive
-			var raycasterBot = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, 15 );
-			
-			scene.add( controls.getObject() );
-			var stats = new Stats();
-			document.body.appendChild( stats.domElement );
-			
-			// Set renderer settings
-			renderer.setSize(window.innerWidth, window.innerHeight);
-			renderer.setClearColor( 0x1e90ff );	// Blue background
-			renderer.shadowMapEnabled = true;
-			renderer.shadowMapSoft = true;
-			document.body.appendChild( renderer.domElement );
-			
-			var light = new THREE.DirectionalLight(0xffffff);
-			light.position.set(0, 500, 300);
-			light.castShadow = true;
-			light.shadowDarkness = 0.3;
-			scene.add(light);
-
-			var model;
-			var loader = new THREE.ColladaLoader();
-			loader.options.convertUpAxis = true;
-			loader.load('Model/sketchup-demo.dae', function ( collada ) {
-					model = collada.scene;
-					model.position.set(-500, -20,0);
-					model.scale.set(0.5,0.5,0.5);
-					model.castShadow = true;
-					model.receiveShadow = true;
-
-					light.target = model;
-					scene.add(model);
-					
-					// Set PC controls and load location data
-					addPCControls(model);
-					//loadLocation();
-				},
-				function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
-			); ;// */
-			
-			/*var box = new THREE.Mesh(
-				new THREE.BoxGeometry(100,100,100),
-				new THREE.MeshPhongMaterial()
-			)
-			box.position.set(0,0,-100);
-			scene.add(box);
-			addPCControls(box); // */
-
-			function getForwardCollision(){		// Project ray forward only
-				// Need to fix - user passes wall if foes too fast
-				var pos = controls.getObject().position;
-				var direction = camera.getWorldDirection();
-				var forward = new THREE.Vector3(direction.x, 0, direction.z);
-				
-				raycaster.set( pos , forward);
-				var intersections = raycaster.intersectObjects( scene.children, true );
-				if ( intersections.length > 0 === true) return true;
-				
-				raycasterBot.set( new THREE.Vector3(pos.x, pos.y-24, pos.z) , forward);
-				var intersectionsBot = raycasterBot.intersectObjects( scene.children, true );
-				if(intersectionsBot.length > 0 === true) return true;
-				
-				return false;
-			}
-			
-			function render() {
-				requestAnimationFrame(render);
-			
-				//box.rotation.x += 0.01;
-				//box.rotation.y += 0.01;
-				
-				renderPCMovement();
-				stats.update();
-				renderer.render(scene, camera);	
-			};
-			render();
-		</script>
-</body>
+		<script src="Resources/main.js"></script>
+		<script src="Resources/gui.js"></script>
 
 </html>

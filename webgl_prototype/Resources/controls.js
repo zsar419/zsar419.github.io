@@ -20,6 +20,7 @@ function lockMousePointer() {
 }
 
 // Movement system
+var playerSpeed = (10-playerControls.speed)/10
 var controlsEnabled = true;
 var moveForward = false;
 var moveBackward = false;
@@ -110,7 +111,7 @@ function addPCControls(model) {
 // Rendering Movement Changes
 function renderPCMovement() {
 	var time = performance.now();
-	var delta = ( time - prevTime ) / 500;
+	var delta = ( time - prevTime ) / (1000 * (10-playerControls.speed)/10);
 	velocity.x -= velocity.x * 10.0 * delta;
 	velocity.z -= velocity.z * 10.0 * delta;
 	// Needa account for gravity
