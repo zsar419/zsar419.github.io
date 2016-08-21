@@ -20,7 +20,7 @@ function lockMousePointer() {
 }
 
 // Movement system
-var playerSpeed = (10-playerControls.speed)/10
+var playerSpeed = (10-playerControls.speed)/10;
 var controlsEnabled = true;
 var moveForward = false;
 var moveBackward = false;
