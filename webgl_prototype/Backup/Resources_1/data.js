@@ -1,7 +1,7 @@
 var playerControls = new function(){
-    this.player_x = 0;
+    this.player_x = 625;
     this.player_y = 25;
-    this.player_z = 0;
+    this.player_z = -83;
 
     //this.direction_x = 0;
     this.direction = 0;
@@ -46,17 +46,20 @@ var toHex = function(str){
 }
 var ambientLight = new function(){
     this.status = false;
-    this.color = "#808080";
+    this.color = "#ffffff";
     this.intensity = 0.5;
 }
 
 var directionalLight = new function(){
     this.status = true;
     this.color = "#ffffff";
-    this.intensity = 0.8;
+    this.intensity = 1;
     this.pos_x = 0;
-    this.pos_y = 400;
+    this.pos_y = 300;
     this.pos_z = 300;
+    //this.shadowDarkness = 0.5;
+    // Target model
+    
 }
 
 var spotLight1 = new function(){
@@ -66,6 +69,8 @@ var spotLight1 = new function(){
     this.pos_x = 0;
     this.pos_y = 400;
     this.pos_z = 0;
+    this.shadowDarkness = 0.5;
+    
 }
 
 var spotLight2 = new function(){
@@ -75,6 +80,7 @@ var spotLight2 = new function(){
     this.pos_x = 0;
     this.pos_y = 0;
     this.pos_z = 0;
+    this.shadowDarkness = 0.5;
 }
 
 var sceneControls = new function(){

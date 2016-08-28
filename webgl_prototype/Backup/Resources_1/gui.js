@@ -1,6 +1,44 @@
+/*datGUI controls object*/
+var guiControls = new function(){
+    this.rotationX  = 0.0;
+    this.rotationY  = 0.0;
+    this.rotationZ  = 0.0;
+    
+    this.lightX = 19;
+    this.lightY = 47;
+    this.lightZ = 19;
+    this.intensity = 2.5;       
+    this.distance = 373;
+    this.angle = 1.6;
+    this.exponent = 38;
+    this.shadowCameraNear = 34;
+    this.shadowCameraFar = 2635;
+    this.shadowCameraFov = 68;
+    this.shadowCameraVisible=false;
+    this.shadowMapWidth=512;
+    this.shadowMapHeight=512;
+    this.shadowBias=0.00;
+    this.shadowDarkness=0.11;       
+
+}
+
 function toRads(degrees){ return degrees/180*Math.PI; }
 
-
+/*adds spot light with starting parameters*/
+var spotLight = new THREE.SpotLight(0xffffff);
+spotLight.castShadow = true;
+spotLight.position.set (20, 35, 40);
+spotLight.intensity = guiControls.intensity;        
+spotLight.distance = guiControls.distance;
+spotLight.angle = guiControls.angle;
+spotLight.exponent = guiControls.exponent;
+spotLight.shadowCameraNear = guiControls.shadowCameraNear;
+spotLight.shadowCameraFar = guiControls.shadowCameraFar;
+spotLight.shadowCameraFov = guiControls.shadowCameraFov;
+spotLight.shadowCameraVisible = guiControls.shadowCameraVisible;
+spotLight.shadowBias = guiControls.shadowBias;
+spotLight.shadowDarkness = guiControls.shadowDarkness;
+//scene.add(spotLight);
 
 /*adds controls to scene*/
 var gui = new dat.GUI();

@@ -57,6 +57,7 @@ var directionalLight = new function(){
     this.pos_x = 0;
     this.pos_y = 400;
     this.pos_z = 300;
+    // Target model
 }
 
 var spotLight1 = new function(){
@@ -66,6 +67,7 @@ var spotLight1 = new function(){
     this.pos_x = 0;
     this.pos_y = 400;
     this.pos_z = 0;
+    
 }
 
 var spotLight2 = new function(){
