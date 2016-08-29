@@ -9,7 +9,7 @@ scene.fog.color.setHSL( 0.6, 0, 1 );
 lockMousePointer();	
 addPCControls(); // */
 var controls = new THREE.PointerLockControls( camera );	// Web based controls
-controls.getObject().position.set(playerControls.player_x,playerControls.player_y,playerControls.player_z);
+controls.getObject().position.set(playerControls.pos_x,playerControls.pos_y,playerControls.pos_z);
 controls.getObject().rotation.y = playerControls.direction/180*Math.PI;
 scene.add( controls.getObject() );
 
@@ -144,9 +144,9 @@ function setLoop(degrees){
 function render() {
     renderPCMovement();	// Deals with collisions
     
-    playerControls.player_x = controls.getObject().position.x;
-    playerControls.player_y = controls.getObject().position.y;
-    playerControls.player_z = controls.getObject().position.z;
+    playerControls.pos_x = controls.getObject().position.x;
+    playerControls.pos_y = controls.getObject().position.y;
+    playerControls.pos_z = controls.getObject().position.z;
     playerControls.direction = setLoop(controls.getObject().rotation.y/Math.PI*180);
     
 };

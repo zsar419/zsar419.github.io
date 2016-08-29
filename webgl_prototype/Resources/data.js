@@ -1,17 +1,17 @@
 var playerControls = new function(){
-    this.player_x = 0;
-    this.player_y = 25;
-    this.player_z = 0;
+    this.pos_x = 0;
+    this.pos_y = 25;
+    this.pos_z = 0;
 
     //this.direction_x = 0;
     this.direction = 0;
     //this.direction_z = 0;
 
     this.fov = 75;
-    this.speed = 5; // Can improve on the speed formula 
+    this.speed = 10; // Can improve on the speed formula 
 
     this.get_player_data = function() { 
-        console.log("X: ",this.player_x,"\nY: ",this.player_y,"\nZ: ",this.player_z); 
+        console.log("X: ",this.pos_x,"\nY: ",this.pos_y,"\nZ: ",this.pos_z); 
         console.log("direction: ",this.direction);    
         console.log("fov: ", this.fov);
         console.log("speed: ", this.speed);    
@@ -32,6 +32,8 @@ var modelControls = new function(){
     this.scale_x = 0.5;
     this.scale_y = 0.5;
     this.scale_z = 0.5;
+
+    // this.shadows = true;
     this.synchronize_scaling = false; // Need to update all elements
 
     this.get_model_data = function() { 
@@ -81,4 +83,6 @@ var sceneControls = new function(){
     this.get_scene_data = function() { 
     };
     // rendering colour
+    // Ground/plane
+    // Fog
 }

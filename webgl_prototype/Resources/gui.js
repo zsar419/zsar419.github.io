@@ -7,32 +7,25 @@ var gui = new dat.GUI();
 
 function addPlayerControls(){
     var playerGui = gui.addFolder('Player');
-    playerGui.add( playerControls, 'player_x',-5000,5000).listen().onChange(function(){
-        controls.getObject().position.x = playerControls.player_x;        
+    playerGui.add( playerControls, 'pos_x',-5000,5000).listen().onChange(function(){
+        controls.getObject().position.x = playerControls.pos_x;        
     });
-    playerGui.add( playerControls, 'player_y',-5000,5000).listen().onChange(function(){
-        controls.getObject().position.y = playerControls.player_y;
+    playerGui.add( playerControls, 'pos_y',-5000,5000).listen().onChange(function(){
+        controls.getObject().position.y = playerControls.pos_y;
     });;
-    playerGui.add( playerControls, 'player_z',-5000,5000).listen().onChange(function(){
-        controls.getObject().position.z = playerControls.player_z;
+    playerGui.add( playerControls, 'pos_z',-5000,5000).listen().onChange(function(){
+        controls.getObject().position.z = playerControls.pos_z;
     });;
 
-    /*playerGui.add( playerControls, 'direction_x', -90,90).onChange(function(){
-        controls.getObject().rotation.x = toRads(playerControls.direction_x);
-    });*/
     playerGui.add( playerControls, 'direction', -180,180).listen().onChange(function(){
         controls.getObject().rotation.y = toRads(playerControls.direction);
     });
-    //playerGui.add( playerControls, 'direction', 0,360).listen();
-    /*playerGui.add( playerControls, 'direction_z', -1,1).onChange(function(){
-        controls.getObject().rotation.z = toRads(playerControls.direction_z);
-    });*/
 
     playerGui.add( playerControls, 'fov', 10,120).onChange(function(){
         camera.fov = playerControls.fov;
         camera.updateProjectionMatrix();
     });
-    playerGui.add( playerControls, 'speed', 1,9).onChange(function(){
+    playerGui.add( playerControls, 'speed', 1,15).onChange(function(){
         playerSpeed = playerControls.speed;
     });
     playerGui.add( playerControls, 'gravity').onChange(function(){
@@ -44,13 +37,13 @@ function addPlayerControls(){
 function addModelControls(){
     var modelGui = gui.addFolder('Model');
 
-    modelGui.add( modelControls, "pos_x",-5000,5000).onChange(function(){
+    modelGui.add( modelControls, "pos_x",-1000,1000).onChange(function(){
         model.position.x = modelControls.pos_x;
     });
-    modelGui.add( modelControls, "pos_y",-5000,5000).onChange(function(){
+    modelGui.add( modelControls, "pos_y",-1000,1000).onChange(function(){
         model.position.y = modelControls.pos_y;
     });
-    modelGui.add( modelControls, "pos_z",-5000,5000).onChange(function(){
+    modelGui.add( modelControls, "pos_z",-1000,1000).onChange(function(){
         model.position.z = modelControls.pos_z;
     });
 
@@ -96,8 +89,6 @@ function addLightControls(){
     var dLight = lightGui.addFolder('Directional_Light');
     var sLight = lightGui.addFolder('Spot_Light');
     var sLight2 = lightGui.addFolder('Spot_Light2');
-    
-    //lightGui.add( lightControls, 'get_light_data');
 
     // Ambient light
     aLight.add(ambientLight, "status").onChange(function(){
@@ -108,7 +99,7 @@ function addLightControls(){
         a_light.intensity = ambientLight.intensity;
     });
     aLight.addColor(ambientLight, "color").onChange(function(){
-        a_light1.color.setHex(toHex(ambientLight.color));
+        a_light.color.setHex(toHex(ambientLight.color));
     });
     
     // Directional light
@@ -140,7 +131,7 @@ function addLightControls(){
     sLight.addColor(spotLight1, "color").onChange(function(){
         s_light1.color.setHex(toHex(spotLight1.color));
     });
-    sLight.add( spotLight1, "intensity",0,10).onChange(function(){
+    sLight.add( spotLight1, "intensity",0,5).onChange(function(){
         s_light1.intensity = spotLight1.intensity;
     });
     sLight.add( spotLight1, "pos_x",-5000,5000).onChange(function(){
@@ -161,7 +152,7 @@ function addLightControls(){
     sLight2.addColor(spotLight2, "color").onChange(function(){
         s_light2.color.setHex(toHex(spotLight2.color));
     });
-    sLight2.add( spotLight2, "intensity",0,10).onChange(function(){
+    sLight2.add( spotLight2, "intensity",0,5).onChange(function(){
         s_light2.intensity = spotLight2.intensity;
     });
     sLight2.add( spotLight2, "pos_x",-5000,5000).onChange(function(){
@@ -176,6 +167,7 @@ function addLightControls(){
 
     // Print light data
     //lightGui.add( ..., '...');
+    //lightGui.add( lightControls, 'get_light_data');
 }
 
 function addSceneControls(){

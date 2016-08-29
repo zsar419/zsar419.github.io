@@ -2,26 +2,20 @@
 function lockMousePointer() {
 	// Functon called when click occurs
 	var pointerlockchange = function ( event ) {
-		if ( document.pointerLockElement === document.body ) {
-			controlsEnabled = true;
+		if ( document.pointerLockElement === document.body ) 
 			controls.enabled = true;
-		} else {	// Mouse outside of screen
+		else	// Mouse outside of screen
 			controls.enabled = false;
-			//instructions.style.display = '';
-		}
 	}; 
 	
 	// Hook pointer lock function to document
 	document.addEventListener( 'pointerlockchange', pointerlockchange, false );
 	document.body.addEventListener( 'click', function ( event ) {
-		//instructions.style.display = 'none';
 		document.body.requestPointerLock();
 	}, false );
 }
 
-// Movement system
-var playerSpeed = (10-playerControls.speed)/10;
-var controlsEnabled = true;
+// Optimize with bits ***
 var moveForward = false;
 var moveBackward = false;
 var moveLeft = false;
@@ -34,13 +28,13 @@ function addPCControls(model) {
 	var onKeyDown = function ( event ) {
 		switch ( event.keyCode ) {
 			case 38: // up
-				break;
 			case 87: // w
 				moveForward = true;
 				break;
 			case 37: // left
 			case 65: // a
-				moveLeft = true; break;
+				moveLeft = true;
+				break;
 			case 40: // down
 			case 83: // s
 				moveBackward = true;
@@ -52,12 +46,6 @@ function addPCControls(model) {
 			case 32: // space
 				if ( canJump === true ) velocity.y += 350;
 				canJump = false;
-				break;
-			case 186: // ; -> save
-				saveLocation();
-				break;
-			case 76: // l -> load
-				loadLocation();
 				break;
 			// Model controls
 			case 189:	// -
@@ -111,7 +99,8 @@ function addPCControls(model) {
 // Rendering Movement Changes
 function renderPCMovement() {
 	var time = performance.now();
-	var delta = ( time - prevTime ) / (1000 * (10-playerControls.speed)/10);
+	var playerSpeed = 1600-(playerControls.speed*100); // 400~1500
+	var delta = ( time - prevTime ) / playerSpeed; 
 	velocity.x -= velocity.x * 10.0 * delta;
 	velocity.z -= velocity.z * 10.0 * delta;
 	// Needa account for gravity
