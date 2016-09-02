@@ -7,7 +7,7 @@
         "pos_y": 25,
         "pos_z": 0,
         "height": 25,
-        "direction": 0,
+        "direction": 0.34377467707849396,
         "fov": 75,
         "speed": 10,
         "fly_mode": false
@@ -77,11 +77,11 @@
     },
     "Entrance": {
       "0": {
-        "pos_x": -140.99935658395478,
+        "pos_x": -194.05402942586684,
         "pos_y": 25,
-        "pos_z": -742.2548443531591,
+        "pos_z": -737.0791081591033,
         "height": 25,
-        "direction": -164.4388872025453,
+        "direction": -145.4166884042037,
         "fov": 75,
         "speed": 10,
         "fly_mode": false
@@ -114,10 +114,10 @@
       "4": {
         "status": true,
         "color": "#ffffff",
-        "intensity": 0.8,
-        "pos_x": 0,
+        "intensity": 0.6034288166313928,
+        "pos_x": 56.12781963289399,
         "pos_y": 400,
-        "pos_z": 300,
+        "pos_z": -346.15805812136796,
         "follow_player": false
       },
       "5": {

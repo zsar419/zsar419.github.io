@@ -171,7 +171,7 @@ function addLightControls(){
         d_light.position.z = directionalLight.pos_z;
     });
     dLight.add(directionalLight, "follow_player").onChange(function(){
-        d_light.follow = !d_light.follow;
+        d_light.follow = directionalLight.follow_player;
     });
     
     // Spotlight 1
@@ -195,7 +195,7 @@ function addLightControls(){
         s_light1.position.z = spotLight1.pos_z;
     });
     sLight.add(spotLight1, "follow_player").onChange(function(){
-        s_light1.follow = !s_light1.follow;
+        s_light1.follow = spotLight1.follow_player;
     });
 
     
@@ -221,7 +221,7 @@ function addLightControls(){
         s_light2.position.z = spotLight2.pos_z;
     });
     sLight2.add(spotLight1, "follow_player").onChange(function(){
-        s_light2.follow = !s_light2.follow;
+        s_light2.follow = spotLight2.follow_player;
     });
 
     // Print light data

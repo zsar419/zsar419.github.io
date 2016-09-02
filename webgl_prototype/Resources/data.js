@@ -80,11 +80,6 @@ var directionalLight = new function(){
     this.pos_y = 400;
     this.pos_z = 300;
     this.follow_player = false;
-    this.set_on_player = function() { 
-        this.pos_x = playerControls.pos_x;
-        this.pos_y = playerControls.pos_y+400;
-        this.pos_z = playerControls.pos_z;
-    };
 }
 
 var spotLight1 = new function(){
@@ -95,11 +90,6 @@ var spotLight1 = new function(){
     this.pos_y = 400;
     this.pos_z = 0;
     this.follow_player = false;
-    this.set_on_player = function() { 
-        this.pos_x = playerControls.pos_x;
-        this.pos_y = playerControls.pos_y+400;
-        this.pos_z = playerControls.pos_z;
-    };
 }
 
 var spotLight2 = new function(){
@@ -110,9 +100,4 @@ var spotLight2 = new function(){
     this.pos_y = 0;
     this.pos_z = 0;
     this.follow_player = false;
-    this.set_on_player = function() { 
-        this.pos_x = playerControls.pos_x;
-        this.pos_y = playerControls.pos_y+400;
-        this.pos_z = playerControls.pos_z;
-    };
 }
