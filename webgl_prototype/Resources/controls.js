@@ -1,5 +1,5 @@
 // First Person Camera Controls
-function lockMousePointer() {
+function lockMousePointer(controls) {
 	// Functon called when click occurs
 	var pointerlockchange = function ( event ) {
 		if ( document.pointerLockElement === document.body ) 
@@ -97,7 +97,7 @@ function addPCControls(model) {
 }
 
 // Rendering Movement Changes
-function renderPCMovement() {
+function renderPCMovement(player, collision) {
 	var time = performance.now();
 	var playerSpeed = 1600-(playerControls.speed*100); // 400~1500
 	var delta = ( time - prevTime ) / playerSpeed; 
@@ -107,12 +107,12 @@ function renderPCMovement() {
 	//velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 	
 	// Prevents forward movement when colliding
-	if ( moveForward && !getForwardCollision()) velocity.z -= 400.0 * delta;
+	if ( moveForward && !collision) velocity.z -= 400.0 * delta;
 	if ( moveBackward ) velocity.z += 400.0 * delta;
 	if ( moveLeft ) velocity.x -= 400.0 * delta;
 	if ( moveRight ) velocity.x += 400.0 * delta;
-	controls.getObject().translateX( velocity.x * delta );
-	controls.getObject().translateY( velocity.y * delta );
-	controls.getObject().translateZ( velocity.z * delta );
+	player.translateX( velocity.x * delta );
+	player.translateY( velocity.y * delta );
+	player.translateZ( velocity.z * delta );
 	prevTime = time;
 }

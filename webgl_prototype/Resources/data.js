@@ -1,26 +1,29 @@
+// Default settings
+
+var toRads = (degrees) => degrees/180*Math.PI;
+var toHex = (str) => parseInt(str.replace(/^#/, ''), 16);
+
 var playerControls = new function(){
+    this.height = 25;
+    
     this.pos_x = 0;
-    this.pos_y = 25;
+    this.pos_y = this.height;
     this.pos_z = 0;
 
     //this.direction_x = 0;
     this.direction = 0;
     //this.direction_z = 0;
+        // Might need for VR 
 
     this.fov = 75;
-    this.speed = 10; // Can improve on the speed formula 
+    this.speed = 10; 
 
-    this.get_player_data = function() { 
-        console.log("X: ",this.pos_x,"\nY: ",this.pos_y,"\nZ: ",this.pos_z); 
-        console.log("direction: ",this.direction);    
-        console.log("fov: ", this.fov);
-        console.log("speed: ", this.speed);    
-    };
-
-    this.gravity = false;
-    // height?
+    this.fly_mode = false;
 }
+
 var modelControls = new function(){
+    this.name = 'sketchup-demo.dae';
+
     this.pos_x = -500;
     this.pos_y = 0;
     this.pos_z = 0;
@@ -36,20 +39,37 @@ var modelControls = new function(){
     // this.shadows = true;
     this.synchronize_scaling = false; // Need to update all elements
 
-    this.get_model_data = function() { 
-        console.log("pos_x: ",this.pos_x,"\npos_y: ",this.pos_y,"\npos_z: ",this.pos_z); 
-        console.log("rot_x: ",this.rot_x,"\nrot_y: ",this.rot_y, "\nrot_z: ",this.rot_z);    
-        console.log("scale_x: ",this.scale_x,"\nscale_y: ",this.scale_y, "\nscale_z: ",this.scale_z);    
-    };
+    this.load_model = function() {};
 }
 
-var toHex = function(str){
-    return parseInt(str.replace(/^#/, ''), 16);
+var sceneControls = new function(){
+    this.skycolor = "#1E90FF";  // Need to fix color picker
+    //renderer.setClearColor( scene.fog.color );  // Choose colour
 }
+
+var planeControls = new function(){
+    this.status = true;
+    this.color = "#CCCCCC";
+    this.pos_x = 0;
+    this.pos_y = -5;
+    this.pos_z = 0;
+    this.scale = 5;
+}
+
 var ambientLight = new function(){
     this.status = false;
     this.color = "#808080";
     this.intensity = 0.5;
+}
+
+var hemisphereLight = new function(){
+    this.status = true;
+    this.skycolor = "#ffffff";
+    this.groundcolor = "#ffffff";
+    this.intensity = 0.5;
+    this.hue = 0.6;
+    this.saturation = 1;
+    this.lightness = 0.6;
 }
 
 var directionalLight = new function(){
@@ -59,6 +79,12 @@ var directionalLight = new function(){
     this.pos_x = 0;
     this.pos_y = 400;
     this.pos_z = 300;
+    this.follow_player = false;
+    this.set_on_player = function() { 
+        this.pos_x = playerControls.pos_x;
+        this.pos_y = playerControls.pos_y+400;
+        this.pos_z = playerControls.pos_z;
+    };
 }
 
 var spotLight1 = new function(){
@@ -68,6 +94,12 @@ var spotLight1 = new function(){
     this.pos_x = 0;
     this.pos_y = 400;
     this.pos_z = 0;
+    this.follow_player = false;
+    this.set_on_player = function() { 
+        this.pos_x = playerControls.pos_x;
+        this.pos_y = playerControls.pos_y+400;
+        this.pos_z = playerControls.pos_z;
+    };
 }
 
 var spotLight2 = new function(){
@@ -77,12 +109,10 @@ var spotLight2 = new function(){
     this.pos_x = 0;
     this.pos_y = 0;
     this.pos_z = 0;
-}
-
-var sceneControls = new function(){
-    this.get_scene_data = function() { 
+    this.follow_player = false;
+    this.set_on_player = function() { 
+        this.pos_x = playerControls.pos_x;
+        this.pos_y = playerControls.pos_y+400;
+        this.pos_z = playerControls.pos_z;
     };
-    // rendering colour
-    // Ground/plane
-    // Fog
 }
