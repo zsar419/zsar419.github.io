@@ -3,20 +3,20 @@
   "remembered": {
     "Default": {
       "0": {
-        "pos_x": -190.9639888981498,
-        "pos_y": 24.82698528277885,
-        "pos_z": -736.7568845660155,
+        "pos_x": -205.47981820386696,
+        "pos_y": 24.535764025695798,
+        "pos_z": -730.5157254901978,
         "height": 25,
         "jump_velocity": 50,
         "collision_dist": 15,
-        "direction": -162.9491969352054,
+        "direction": -153.32350597701316,
         "fov": 75,
         "speed": 10,
         "fly_mode": false
       },
       "1": {
         "name": "sketchup-demo.dae",
-        "load_time": 2,
+        "load_time": 2.977769297875084,
         "pos_x": -500,
         "pos_y": 0,
         "pos_z": 0,
