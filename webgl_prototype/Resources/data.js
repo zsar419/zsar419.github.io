@@ -3,26 +3,28 @@
 var toRads = (degrees) => degrees/180*Math.PI;
 var toHex = (str) => parseInt(str.replace(/^#/, ''), 16);
 
-var playerControls = new function(){
+var player_c = new function(){
     this.height = 25;
     
     this.pos_x = 0;
     this.pos_y = this.height;
     this.pos_z = 0;
 
+    this.jump_velocity = 50;
     //this.direction_x = 0;
     this.direction = 0;
     //this.direction_z = 0;
         // Might need for VR 
-
+    this.collision_dist = 15;
     this.fov = 75;
     this.speed = 10; 
 
     this.fly_mode = false;
 }
 
-var modelControls = new function(){
+var model_c = new function(){
     this.name = 'sketchup-demo.dae';
+    this.load_time = 2;
 
     this.pos_x = -500;
     this.pos_y = 0;

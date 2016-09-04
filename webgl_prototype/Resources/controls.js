@@ -44,29 +44,13 @@ function addPCControls(model) {
 				moveRight = true;
 				break;
 			case 32: // space
-				if ( canJump === true ) velocity.y += 350;
-				canJump = false;
+				if ( !player_c.fly_mode) {
+					if(canJump === true) velocity.y += player_c.jump_velocity;
+					canJump = false;
+				} else player.translateY( 5 );
 				break;
-			// Model controls
-			case 189:	// -
-				controls.getObject().position.y -= 1;
-				break;
-			case 187:	// =
-				controls.getObject().position.y += 1;
-				break;
-			case 190:	// .
-				model.scale.x += 0.1;
-				model.scale.y += 0.1;
-				model.scale.z += 0.1;
-				break;
-			case 188:	// ,	
-				model.scale.x -= 0.1;
-				model.scale.y -= 0.1;
-				model.scale.z -= 0.1;
-				break;
-			case 192:	// ~
-				console.log(controls.getObject().position);
-				console.log(model.scale);
+			case 17: // ctrl
+				if ( player_c.fly_mode) player.translateY( -5 );
 				break;
 		}
 	};
@@ -97,22 +81,35 @@ function addPCControls(model) {
 }
 
 // Rendering Movement Changes
-function renderPCMovement(player, collision) {
+function renderPCMovement(player, collision, g_collision) {
 	var time = performance.now();
-	var playerSpeed = 1600-(playerControls.speed*100); // 400~1500
-	var delta = ( time - prevTime ) / playerSpeed; 
+	var playerSpeed = 1600-(player_c.speed*100); // 400~1500
+	var delta = ( time - prevTime ) / playerSpeed;
+	player.isFlying = time>model_c.load_time*1000?player_c.fly_mode:true; // FIX THIS FALL THROUGH FLOOR PROBLEM
 	velocity.x -= velocity.x * 10.0 * delta;
 	velocity.z -= velocity.z * 10.0 * delta;
-	// Needa account for gravity
-	//velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 	
 	// Prevents forward movement when colliding
 	if ( moveForward && !collision) velocity.z -= 400.0 * delta;
 	if ( moveBackward ) velocity.z += 400.0 * delta;
 	if ( moveLeft ) velocity.x -= 400.0 * delta;
 	if ( moveRight ) velocity.x += 400.0 * delta;
+
 	player.translateX( velocity.x * delta );
-	player.translateY( velocity.y * delta );
 	player.translateZ( velocity.z * delta );
+
+	if(!player.isFlying) {// Gravity	
+		velocity.y -= 9.8 * 10 * delta; // 10.0 = mass
+		player.translateY( velocity.y * delta );
+		if ( g_collision ){
+			var ground_ray_height = ground_r.distance + ground_r.point.y;
+			if( player.position.y < ground_ray_height ) {	// height based
+				velocity.y = 0;
+				player.position.y = ground_ray_height;
+				canJump = true;
+			}
+		} // */
+	}
+
 	prevTime = time;
 }

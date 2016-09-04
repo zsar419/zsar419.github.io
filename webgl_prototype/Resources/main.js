@@ -3,7 +3,8 @@
         xobj.overrideMimeType("application/json");
     xobj.open('GET', './Resources/settings.json', true); // Replace 'my_data' with the path to your file
     xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4) callback(xobj.responseText);
+        if (xobj.readyState == 4) 
+            callback(xobj.responseText);
     };
     xobj.send(null);  
  }
@@ -17,8 +18,9 @@ loadJSON(function(response) {
 
 
 var scene, camera, renderer;
-var player, model, plane;
-// playerSpeed defined in controls
+var player, model, plane, raycaster, gravitycaster;
+
+var ground_r;
 
 // Lights
 var a_light, h_light, d_light, s_light1, s_light2;
@@ -28,29 +30,26 @@ var setPlaneSettings, loadModel;
 
 function init(){
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(playerControls.fov, window.innerWidth/window.innerHeight, 1,5000);
+    camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,5000);
     renderer = new THREE.WebGLRenderer({ antialias: true });
 
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
-    // First Person Camera Controls (PC based)
-
-
     var controls = new THREE.PointerLockControls( camera );	// Web based controls
     player = controls.getObject();
-    player.position.set(playerControls.pos_x,playerControls.pos_y,playerControls.pos_z);
-    player.rotation.y = playerControls.direction/180*Math.PI;
+    player.position.set(player_c.pos_x,player_c.pos_y + 30,player_c.pos_z);
+    player.rotation.y = player_c.direction/180*Math.PI;
+    player.isFlying = true;
     scene.add( player );
 
     lockMousePointer(controls);	
     addPCControls(); // */
 
     // Collision checking
-    var ray_distance = 15;
-    var raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, ray_distance );
-    // 2nd Raycaster can make it computationally intensive - find better alternative
-    var raycasterBot = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, ray_distance );
+    var ray_distance = player_c.collision_dist;
+    raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, ray_distance );
+    gravitycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, player_c.height );
 
     var stats = new Stats();
     document.body.appendChild( stats.domElement );
@@ -102,15 +101,17 @@ function init(){
         plane.receiveShadow = true;
         plane.position.set(planeControls.pos_x,planeControls.pos_y,planeControls.pos_z);
         if(planeControls.status) scene.add(plane);
+        // Create walls
     }
+
     loadModel = function(name){
         var loader = new THREE.ColladaLoader();
         loader.options.convertUpAxis = true;
         loader.load('Model/'+name, function ( collada ) {
                 model = collada.scene;
-                model.position.set(modelControls.pos_x, modelControls.pos_y, modelControls.pos_z);
-                model.rotation.set(modelControls.rot_x, modelControls.rot_y, modelControls.rot_z);
-                model.scale.set(modelControls.scale_x,modelControls.scale_y,modelControls.scale_z);
+                model.position.set(model_c.pos_x, model_c.pos_y, model_c.pos_z);
+                model.rotation.set(model_c.rot_x, model_c.rot_y, model_c.rot_z);
+                model.scale.set(model_c.scale_x,model_c.scale_y,model_c.scale_z);
                 // Casting shadows for all children
                 model.traverse(function(child) {	// or scene.traverse
                     child.castShadow = true;
@@ -121,8 +122,8 @@ function init(){
         );
     }
     function initObjects(){
-        loadModel(modelControls.name);
         setPlaneSettings();
+        loadModel(model_c.name);
 
         var cube = new THREE.Mesh(
             new THREE.BoxGeometry(40,40,40),
@@ -143,20 +144,35 @@ function init(){
         }, false
     );
 
-    function getForwardCollision(flying){		// Project ray forward only
-        if(flying) return false;
-        var pos = controls.getObject().position;
+    function getGravityCollision(pos){
+        if(player.isFlying) return false;
+        var downward = new THREE.Vector3(0, -1, 0);
+        gravitycaster.set( pos , downward);
+        var intersectionsGravity = gravitycaster.intersectObjects( scene.children, true );
+        if ( intersectionsGravity.length > 0  ) {
+            ground_r = intersectionsGravity[intersectionsGravity.length-1];
+            //console.log(ground_r.distance + " " + ground_r.point.y);
+            return true;
+        }
+        return false;
+    }
+
+    function getForwardCollision(pos){		// Project ray forward only
+        if(player.isFlying) return false;
+        var pos = player.position.clone();
         var direction = camera.getWorldDirection();
         var forward = new THREE.Vector3(direction.x, 0, direction.z);
 
+        // Forward raycast
         raycaster.set( pos , forward);
         var intersections = raycaster.intersectObjects( scene.children, true );
-        if ( intersections.length > 0 === true) return true;
+        if ( intersections.length > 0 ) return true;
 
         // ray casting from bottom
-        raycasterBot.set( new THREE.Vector3(pos.x, pos.y-24, pos.z) , forward);
-        var intersectionsBot = raycasterBot.intersectObjects( scene.children, true );
-        if(intersectionsBot.length > 0 === true) return true;
+        pos.y-= (player_c.height-1);
+        raycaster.set( pos , forward);
+        var intersectionsBot = raycaster.intersectObjects( scene.children, true );
+        if(intersectionsBot.length > 0 ) return true;
         return false;
     }
 
@@ -166,26 +182,25 @@ function init(){
         else return degrees;
     }
 
-    function lightFollow(lightsource){
+
+    function lightFollow(lightsource){player
         if(lightsource.follow){
-            lightsource.position.x = controls.getObject().position.x;;
-            //lightsource.pos_y = playerControls.pos_y;
-            lightsource.position.z = controls.getObject().position.z;
+            lightsource.position.x = player.position.x;;
+            lightsource.position.z = player.position.z;
         }
     }
 
     function render() {
-        renderPCMovement(player, getForwardCollision(playerControls.fly_mode));	// Deals with collisions
-        
-        playerControls.pos_x = player.position.x;
-        playerControls.pos_y = player.position.y;
-        playerControls.pos_z = player.position.z;
-        playerControls.direction = setLoop(player.rotation.y/Math.PI*180);
+        var pos = player.position.clone();
+        renderPCMovement(player, getForwardCollision(pos), getGravityCollision(pos) );	// Deals with collisions
+        player_c.pos_x = player.position.x;
+        player_c.pos_y = player.position.y;
+        player_c.pos_z = player.position.z;
+        player_c.direction = setLoop(player.rotation.y/Math.PI*180);
 
         lightFollow(d_light);
         lightFollow(s_light1);
         lightFollow(s_light2);
-        
     };
 
     function animate(){

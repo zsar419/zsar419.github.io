@@ -1,19 +1,22 @@
 {
-  "preset": "Entrance",
+  "preset": "Default",
   "remembered": {
     "Default": {
       "0": {
-        "pos_x": 0,
-        "pos_y": 25,
-        "pos_z": 0,
+        "pos_x": -190.9639888981498,
+        "pos_y": 24.82698528277885,
+        "pos_z": -736.7568845660155,
         "height": 25,
-        "direction": 0.34377467707849396,
+        "jump_velocity": 50,
+        "collision_dist": 15,
+        "direction": -162.9491969352054,
         "fov": 75,
         "speed": 10,
         "fly_mode": false
       },
       "1": {
         "name": "sketchup-demo.dae",
+        "load_time": 2,
         "pos_x": -500,
         "pos_y": 0,
         "pos_z": 0,
@@ -44,80 +47,6 @@
         "pos_x": 0,
         "pos_y": 400,
         "pos_z": 300,
-        "follow_player": false
-      },
-      "5": {
-        "status": true,
-        "color": "#ffffff",
-        "intensity": 0.5,
-        "pos_x": 0,
-        "pos_y": 400,
-        "pos_z": 0,
-        "follow_player": false
-      },
-      "6": {
-        "status": false,
-        "color": "#ffffff",
-        "intensity": 0.5,
-        "pos_x": 0,
-        "pos_y": 0,
-        "pos_z": 0
-      },
-      "7": {
-        "skycolor": "#1E90FF"
-      },
-      "8": {
-        "status": true,
-        "color": "#CCCCCC",
-        "pos_x": 0,
-        "pos_y": -5,
-        "pos_z": 0,
-        "scale": 5
-      }
-    },
-    "Entrance": {
-      "0": {
-        "pos_x": -194.05402942586684,
-        "pos_y": 25,
-        "pos_z": -737.0791081591033,
-        "height": 25,
-        "direction": -145.4166884042037,
-        "fov": 75,
-        "speed": 10,
-        "fly_mode": false
-      },
-      "1": {
-        "name": "sketchup-demo.dae",
-        "pos_x": -500,
-        "pos_y": 0,
-        "pos_z": 0,
-        "rot_x": 0,
-        "rot_y": 0,
-        "rot_z": 0,
-        "synchronize_scaling": false,
-        "scale_x": 0.5,
-        "scale_y": 0.5,
-        "scale_z": 0.5
-      },
-      "2": {
-        "status": false,
-        "intensity": 0.5,
-        "color": "#808080"
-      },
-      "3": {
-        "status": true,
-        "intensity": 0.5,
-        "hue": 0.6,
-        "saturation": 1,
-        "lightness": 0.6
-      },
-      "4": {
-        "status": true,
-        "color": "#ffffff",
-        "intensity": 0.6034288166313928,
-        "pos_x": 56.12781963289399,
-        "pos_y": 400,
-        "pos_z": -346.15805812136796,
         "follow_player": false
       },
       "5": {

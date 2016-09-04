@@ -8,8 +8,8 @@ function loadGUI(){
         preset: 'Default'
     });
 
-    gui.remember(playerControls);
-    gui.remember(modelControls);
+    gui.remember(player_c);
+    gui.remember(model_c);
     gui.remember(ambientLight);
     gui.remember(hemisphereLight);
     gui.remember(directionalLight);
@@ -26,34 +26,40 @@ function loadGUI(){
 
 function addPlayerControls(){
     var playerGui = gui.addFolder('Player');
-    playerGui.add( playerControls, 'pos_x',-2000,2000).listen().onChange(function(){
-        player.position.x = playerControls.pos_x;        
+    playerGui.add( player_c, 'pos_x',-2000,2000).listen().onChange(function(){
+        player.position.x = player_c.pos_x;        
     });
-    playerGui.add( playerControls, 'pos_y',-2000,2000).listen().onChange(function(){
-        player.position.y = playerControls.pos_y;
+    playerGui.add( player_c, 'pos_y',-2000,2000).listen().onChange(function(){
+        player.position.y = player_c.pos_y;
     });
-    playerGui.add( playerControls, 'pos_z',-2000,2000).listen().onChange(function(){
-        player.position.z = playerControls.pos_z;
-    });
-
-    playerGui.add( playerControls, 'height', 0,200).listen().onChange(function(){
-        player.position.y = playerControls.height;
+    playerGui.add( player_c, 'pos_z',-2000,2000).listen().onChange(function(){
+        player.position.z = player_c.pos_z;
     });
 
-    playerGui.add( playerControls, 'direction', -180,180).listen().onChange(function(){
-        player.rotation.y = toRads(playerControls.direction);
+    playerGui.add( player_c, 'height', 0,200).listen().onChange(function(){
+        player.position.y = player_c.height;
+        gravitycaster.far = player_c.height;
     });
 
-    playerGui.add( playerControls, 'fov', 10,120).onChange(function(){
-        camera.fov = playerControls.fov;
+    playerGui.add( player_c, 'jump_velocity', 0,500);
+
+    playerGui.add( player_c, 'collision_dist', 5,200).onChange(function(){
+        raycaster.far = player_c.collision_dist;
+    });
+
+    playerGui.add( player_c, 'direction', -180,180).listen().onChange(function(){
+        player.rotation.y = toRads(player_c.direction);
+    });
+
+    playerGui.add( player_c, 'fov', 10,120).onChange(function(){
+        camera.fov = player_c.fov;
         camera.updateProjectionMatrix();
     });
-    playerGui.add( playerControls, 'speed', 1,14).onChange(function(){
-        playerSpeed = playerControls.speed;
+    playerGui.add( player_c, 'speed', 1,14).onChange(function(){
+        playerSpeed = player_c.speed;
     });
-    playerGui.add( playerControls, 'fly_mode').onChange(function(){
-        // Turn of collisions
-        // Turn of gravity
+    playerGui.add( player_c, 'fly_mode').onChange(function(){
+        player.isFlying = player_c.fly_mode;
     });
 
     
@@ -61,53 +67,54 @@ function addPlayerControls(){
 
 function addModelControls(){
     var modelGui = gui.addFolder('Model');
-    modelGui.add( modelControls, 'name');
-    modelGui.add( modelControls, 'load_model').onChange(function(){
+    modelGui.add( model_c, 'name');
+    modelGui.add( model_c, 'load_model').onChange(function(){
         scene.remove(model);
-        loadModel(modelControls.name);
+        loadModel(model_c.name);
+    });
+    modelGui.add( model_c, 'load_time', 0, 10);
+
+    modelGui.add( model_c, "pos_x",-1000,1000).onChange(function(){
+        model.position.x = model_c.pos_x;
+    });
+    modelGui.add( model_c, "pos_y",-1000,1000).onChange(function(){
+        model.position.y = model_c.pos_y;
+    });
+    modelGui.add( model_c, "pos_z",-1000,1000).onChange(function(){
+        model.position.z = model_c.pos_z;
     });
 
-    modelGui.add( modelControls, "pos_x",-1000,1000).onChange(function(){
-        model.position.x = modelControls.pos_x;
+    modelGui.add( model_c, "rot_x", 0,360).onChange(function(){
+        model.rotation.x = toRads(model_c.rot_x);
     });
-    modelGui.add( modelControls, "pos_y",-1000,1000).onChange(function(){
-        model.position.y = modelControls.pos_y;
+    modelGui.add( model_c, "rot_y",0,360).onChange(function(){
+        model.rotation.y = toRads(model_c.rot_y);
     });
-    modelGui.add( modelControls, "pos_z",-1000,1000).onChange(function(){
-        model.position.z = modelControls.pos_z;
-    });
-
-    modelGui.add( modelControls, "rot_x", 0,360).onChange(function(){
-        model.rotation.x = toRads(modelControls.rot_x);
-    });
-    modelGui.add( modelControls, "rot_y",0,360).onChange(function(){
-        model.rotation.y = toRads(modelControls.rot_y);
-    });
-    modelGui.add( modelControls, "rot_z",0,360).onChange(function(){
-        model.rotation.z = toRads(modelControls.rot_z);
+    modelGui.add( model_c, "rot_z",0,360).onChange(function(){
+        model.rotation.z = toRads(model_c.rot_z);
     });
 
-    modelGui.add( modelControls, "synchronize_scaling").onChange(function(){
+    modelGui.add( model_c, "synchronize_scaling").onChange(function(){
     });
 
     function synchronize_scale(value){
         model.scale.x = model.scale.y = model.scale.z = value;
-        modelControls.scale_x = modelControls.scale_y = modelControls.scale_z = value;
+        model_c.scale_x = model_c.scale_y = model_c.scale_z = value;
     }
-    modelGui.add( modelControls, "scale_x", 0.1,5).listen().onChange(function(){
-        if(modelControls.synchronize_scaling)
-            synchronize_scale(modelControls.scale_x);
-        else model.scale.x = modelControls.scale_x;
+    modelGui.add( model_c, "scale_x", 0.1,5).listen().onChange(function(){
+        if(model_c.synchronize_scaling)
+            synchronize_scale(model_c.scale_x);
+        else model.scale.x = model_c.scale_x;
     });
-    modelGui.add( modelControls, "scale_y", 0.1,5).listen().onChange(function(){
-        if(modelControls.synchronize_scaling)
-            synchronize_scale(modelControls.scale_y);
-        else model.scale.y = modelControls.scale_y;
+    modelGui.add( model_c, "scale_y", 0.1,5).listen().onChange(function(){
+        if(model_c.synchronize_scaling)
+            synchronize_scale(model_c.scale_y);
+        else model.scale.y = model_c.scale_y;
     });
-    modelGui.add( modelControls, "scale_z", 0.1,5).listen().onChange(function(){
-        if(modelControls.synchronize_scaling)
-            synchronize_scale(modelControls.scale_z);
-        else model.scale.z = modelControls.scale_z;
+    modelGui.add( model_c, "scale_z", 0.1,5).listen().onChange(function(){
+        if(model_c.synchronize_scaling)
+            synchronize_scale(model_c.scale_z);
+        else model.scale.z = model_c.scale_z;
     });
     
 }
