@@ -1,6 +1,7 @@
 // Default settings
 
 var toRads = (degrees) => degrees/180*Math.PI;
+var toDegs = (rads) => rads/Math.PI * 180;
 var toHex = (str) => parseInt(str.replace(/^#/, ''), 16);
 
 var player_c = new function(){
@@ -16,6 +17,7 @@ var player_c = new function(){
     //this.direction_z = 0;
         // Might need for VR 
     this.collision_dist = 15;
+    this.step_size = 10;
     this.fov = 75;
     this.speed = 10; 
 

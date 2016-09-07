@@ -38,9 +38,10 @@ function init(){
 
     var controls = new THREE.PointerLockControls( camera );	// Web based controls
     player = controls.getObject();
-    player.position.set(player_c.pos_x,player_c.pos_y + 30,player_c.pos_z);
+    player.position.set(player_c.pos_x,player_c.pos_y+50,player_c.pos_z);
     player.rotation.y = player_c.direction/180*Math.PI;
-    player.isFlying = true;
+    player.isFlying = player_c.fly_mode;
+    player.step = player_c.step_size;
     scene.add( player );
 
     lockMousePointer(controls);	
@@ -48,8 +49,9 @@ function init(){
 
     // Collision checking
     var ray_distance = player_c.collision_dist;
+    var rc_height = player_c.height-2.5;
     raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, ray_distance );
-    gravitycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, player_c.height );
+    gravitycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, rc_height );
 
     var stats = new Stats();
     document.body.appendChild( stats.domElement );
@@ -124,6 +126,7 @@ function init(){
     function initObjects(){
         setPlaneSettings();
         loadModel(model_c.name);
+        player.position.y +=1;  // making up for loss in height
 
         var cube = new THREE.Mesh(
             new THREE.BoxGeometry(40,40,40),
@@ -150,7 +153,7 @@ function init(){
         gravitycaster.set( pos , downward);
         var intersectionsGravity = gravitycaster.intersectObjects( scene.children, true );
         if ( intersectionsGravity.length > 0  ) {
-            ground_r = intersectionsGravity[intersectionsGravity.length-1];
+            ground_r = intersectionsGravity[0];
             //console.log(ground_r.distance + " " + ground_r.point.y);
             return true;
         }
@@ -164,16 +167,32 @@ function init(){
         var forward = new THREE.Vector3(direction.x, 0, direction.z);
 
         // Forward raycast
+        raycaster.far = ray_distance;
         raycaster.set( pos , forward);
         var intersections = raycaster.intersectObjects( scene.children, true );
         if ( intersections.length > 0 ) return true;
 
-        // ray casting from bottom
-        pos.y-= (player_c.height-1);
+        // Simple step size based ray caster - for slope/stair traversal
+        pos.y -= (25-player.step);
         raycaster.set( pos , forward);
+        var intersections_step = raycaster.intersectObjects( scene.children, true );
+        if ( intersections_step.length > 0 ) return true; // */
+
+        // Ray casting to climb
+        /*var h_step = player_c.collision_dist;
+        var v_step = player_c.step_size;        // v_step must be < height
+        var h2_step = v_step * h_step/player_c.height;  // Similar triangles (small horizontal component)
+
+        // Determine length of ray
+        var small_triangle_length = Math.sqrt(Math.pow(v_step,2) + Math.pow(h2_step,2));
+        var main_triangle_length = Math.sqrt(Math.pow(player_c.height,2) + Math.pow(h_step,2));
+        var slope_y = -1+1/90 * toDegs(Math.atan(h_step/(player_c.height-v_step)));
+        
+        raycaster.far = main_triangle_length - small_triangle_length;
+        raycaster.set( pos , new THREE.Vector3(direction.x, slope_y, direction.z));
         var intersectionsBot = raycaster.intersectObjects( scene.children, true );
         if(intersectionsBot.length > 0 ) return true;
-        return false;
+        return false;*/
     }
 
     function setLoop(degrees){

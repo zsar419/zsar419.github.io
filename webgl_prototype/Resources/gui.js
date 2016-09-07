@@ -36,15 +36,18 @@ function addPlayerControls(){
         player.position.z = player_c.pos_z;
     });
 
-    playerGui.add( player_c, 'height', 0,200).listen().onChange(function(){
+    playerGui.add( player_c, 'height', 1,200).listen().onChange(function(){
         player.position.y = player_c.height;
         gravitycaster.far = player_c.height;
     });
 
     playerGui.add( player_c, 'jump_velocity', 0,500);
 
-    playerGui.add( player_c, 'collision_dist', 5,200).onChange(function(){
+    playerGui.add( player_c, 'collision_dist', 5,100).onChange(function(){
         raycaster.far = player_c.collision_dist;
+    });
+    playerGui.add( player_c, 'step_size', 1,50).onChange(function(){
+        player.step = player_c.step_size;
     });
 
     playerGui.add( player_c, 'direction', -180,180).listen().onChange(function(){

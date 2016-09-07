@@ -85,10 +85,11 @@ function renderPCMovement(player, collision, g_collision) {
 	var time = performance.now();
 	var playerSpeed = 1600-(player_c.speed*100); // 400~1500
 	var delta = ( time - prevTime ) / playerSpeed;
-	player.isFlying = time>model_c.load_time*1000?player_c.fly_mode:true; // FIX THIS FALL THROUGH FLOOR PROBLEM
 	velocity.x -= velocity.x * 10.0 * delta;
 	velocity.z -= velocity.z * 10.0 * delta;
 	
+	player.isFlying = time<3000?true:player_c.fly_mode;
+
 	// Prevents forward movement when colliding
 	if ( moveForward && !collision) velocity.z -= 400.0 * delta;
 	if ( moveBackward ) velocity.z += 400.0 * delta;
@@ -98,12 +99,15 @@ function renderPCMovement(player, collision, g_collision) {
 	player.translateX( velocity.x * delta );
 	player.translateZ( velocity.z * delta );
 
-	if(!player.isFlying) {// Gravity	
+	if(!player.isFlying) {
+		// Gravity	
 		velocity.y -= 9.8 * 10 * delta; // 10.0 = mass
 		player.translateY( velocity.y * delta );
+		// Ground collision
 		if ( g_collision ){
-			var ground_ray_height = ground_r.distance + ground_r.point.y;
-			if( player.position.y < ground_ray_height ) {	// height based
+			var ground_ray_height = player_c.height + ground_r.point.y -2.5;
+			//ground_ray_height += ground_r.point.y>-1?ground_r.point.y:0;
+			if( player.position.y <= ground_ray_height ) {	// height based
 				velocity.y = 0;
 				player.position.y = ground_ray_height;
 				canJump = true;
