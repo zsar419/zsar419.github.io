@@ -37,15 +37,23 @@ function init(){
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
     var controls = new THREE.PointerLockControls( camera );	// Web based controls
-    player = controls.getObject();
-    player.position.set(player_c.pos_x,player_c.pos_y+50,player_c.pos_z);
-    player.rotation.y = player_c.direction/180*Math.PI;
-    player.isFlying = true; //player_c.fly_mode;
-    player.step = player_c.step_size;
-    scene.add( player );
+    var setPlayerControls = function(height){
+        player = controls.getObject();
+        player.position.set(player_c.pos_x,player_c.pos_y+height,player_c.pos_z);
+        player.rotation.y = player_c.direction/180*Math.PI;
+        player.isFlying = true;
+        player.step = player_c.step_size;
+        scene.add( player );
 
-    lockMousePointer(controls);	
-    addPCControls(); // */
+        lockMousePointer(controls);	
+        addPCControls(); // */
+    }
+    setPlayerControls(0);
+    
+
+    
+
+    
 
     // Collision checking
     var ray_distance = player_c.collision_dist;
@@ -120,7 +128,9 @@ function init(){
                     //child.receiveShadow = true;
                 });
                 scene.add(model);
-                setTimeout(() => player.isFlying = player_c.fly_mode, 0);
+                setPlayerControls(30);
+                // Delayed function to fix gravity (fall through floor bug)
+                setTimeout(() => player.isFlying = player_c.fly_mode, 500);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
         );
     }
