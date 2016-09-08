@@ -40,7 +40,7 @@ function init(){
     player = controls.getObject();
     player.position.set(player_c.pos_x,player_c.pos_y+50,player_c.pos_z);
     player.rotation.y = player_c.direction/180*Math.PI;
-    player.isFlying = player_c.fly_mode;
+    player.isFlying = true; //player_c.fly_mode;
     player.step = player_c.step_size;
     scene.add( player );
 
@@ -120,6 +120,7 @@ function init(){
                     //child.receiveShadow = true;
                 });
                 scene.add(model);
+                setTimeout(() => player.isFlying = player_c.fly_mode, 0);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
         );
     }

@@ -88,8 +88,6 @@ function renderPCMovement(player, collision, g_collision) {
 	velocity.x -= velocity.x * 10.0 * delta;
 	velocity.z -= velocity.z * 10.0 * delta;
 	
-	player.isFlying = time<3000?true:player_c.fly_mode;
-
 	// Prevents forward movement when colliding
 	if ( moveForward && !collision) velocity.z -= 400.0 * delta;
 	if ( moveBackward ) velocity.z += 400.0 * delta;
