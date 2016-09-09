@@ -32,14 +32,17 @@ function init() {
   controls.noPan = true;
 
   function setOrientationControls(e) {
-    if (!e.alpha) return;
+    if (!e.alpha) {
+      return;
+    }
 
     controls = new THREE.DeviceOrientationControls(camera, true);
     controls.connect();
     controls.update();
 
     element.addEventListener('click', fullscreen, false);
-    window.removeEventListener('deviceorientation', setOrientationControls, true);
+
+    //window.removeEventListener('deviceorientation', setOrientationControls, true);
   }
   window.addEventListener('deviceorientation', setOrientationControls, true);
 
@@ -86,7 +89,9 @@ function resize() {
 
 function update(dt) {
   resize();
+
   camera.updateProjectionMatrix();
+
   controls.update(dt);
 }
 
