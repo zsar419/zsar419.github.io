@@ -21,7 +21,7 @@ function init() {
   camera.position.set(0, 10, 0);
   scene.add(camera);
 
-  //controls = new THREE.OrbitControls(camera, element);
+  controls = new THREE.OrbitControls(camera, element);
   /*controls.rotateUp(Math.PI / 4);
   controls.target.set(
     camera.position.x + 0.1,
