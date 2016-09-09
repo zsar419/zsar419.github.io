@@ -30,16 +30,18 @@ function init() {
   );
   controls.noZoom = true;
   controls.noPan = true;
-  console.log("b");
 
   function setOrientationControls(e) {
-    if (!e.alpha) return;
+    if (!e.alpha) {
+      return;
+    }
 
-    var controls2 = new THREE.DeviceOrientationControls(camera, true);
-    controls2.connect();
-    controls2.update();
+    controls = new THREE.DeviceOrientationControls(camera, true);
+    controls.connect();
+    controls.update();
 
     element.addEventListener('click', fullscreen, false);
+
     window.removeEventListener('deviceorientation', setOrientationControls, true);
   }
   window.addEventListener('deviceorientation', setOrientationControls, true);
@@ -47,11 +49,15 @@ function init() {
 
   var light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
   scene.add(light);
-  var texture = THREE.ImageUtils.loadTexture('textures/patterns/checker.png');
+
+  var texture = THREE.ImageUtils.loadTexture(
+    'textures/patterns/checker.png'
+  );
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat = new THREE.Vector2(50, 50);
   texture.anisotropy = renderer.getMaxAnisotropy();
+
   var material = new THREE.MeshPhongMaterial({
     color: 0xffffff,
     specular: 0xffffff,
@@ -59,10 +65,13 @@ function init() {
     shading: THREE.FlatShading,
     map: texture
   });
+
   var geometry = new THREE.PlaneGeometry(1000, 1000);
+
   var mesh = new THREE.Mesh(geometry, material);
   mesh.rotation.x = -Math.PI / 2;
   scene.add(mesh);
+
   window.addEventListener('resize', resize, false);
   setTimeout(resize, 1);
 }
@@ -70,17 +79,31 @@ function init() {
 function resize() {
   var width = container.offsetWidth;
   var height = container.offsetHeight;
+
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
+
   renderer.setSize(width, height);
   effect.setSize(width, height);
 }
 
-function animate() {
-  controls.update();
+function update(dt) {
+  resize();
 
+  camera.updateProjectionMatrix();
+
+  controls.update(dt);
+}
+
+function render(dt) {
   effect.render(scene, camera);
+}
+
+function animate(t) {
   requestAnimationFrame(animate);
+
+  update(clock.getDelta());
+  render(clock.getDelta());
 }
 
 function fullscreen() {
