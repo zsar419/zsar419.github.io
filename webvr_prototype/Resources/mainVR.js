@@ -36,7 +36,7 @@ function init(){
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
-    var controls = new THREE.PointerLockControls( camera );	// Web based controls
+    var controls = new THREE.PointerLockControls( camera );	// Web based controls    
     var setPlayerControls = function(height){
         player = controls.getObject();
         player.position.set(player_c.pos_x,player_c.pos_y+height,player_c.pos_z);
@@ -59,6 +59,8 @@ function init(){
     };
     var manager = new WebVRManager(renderer, effect, params);
 
+    // Testing
+    controls.update = () => 0;
     function setOrientationControls(e) {
         if (!e.alpha) return;
 
@@ -254,6 +256,10 @@ function init(){
     function animate(timestamp) {
         var delta = Math.min(timestamp - lastRender, 500);
         lastRender = timestamp;
+
+        // Testing
+        camera.updateProjectionMatrix();
+        controls.update();
 
         render();
         stats.update(); 
