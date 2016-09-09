@@ -52,6 +52,12 @@ function init(){
 
     var effect = new THREE.VREffect(renderer);
     effect.setSize(window.innerWidth, window.innerHeight);
+    // Create a VR manager helper to enter and exit VR mode.
+    var params = {
+    hideButton: false, // Default: false.
+    isUndistorted: false // Default: false.
+    };
+    var manager = new WebVRManager(renderer, effect, params);
 
     // VR stuff
     var effect = new THREE.VREffect(renderer);
