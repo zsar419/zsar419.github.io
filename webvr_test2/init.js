@@ -1,4 +1,4 @@
-var camera, scene, renderer;
+  var camera, scene, renderer;
   var effect, controls;
   var element, container;
 
@@ -9,8 +9,9 @@ var camera, scene, renderer;
 
   function init() {
     renderer = new THREE.WebGLRenderer();
-    //renderer.setPixelRatio( window.devicePixelRatio );
-    document.body.appendChild( renderer.domElement );
+    element = renderer.domElement;
+    container = document.getElementById('example');
+    container.appendChild(element);
 
     effect = new THREE.StereoEffect(renderer);
 
@@ -20,7 +21,7 @@ var camera, scene, renderer;
     camera.position.set(0, 10, 0);
     scene.add(camera);
 
-    controls = new THREE.OrbitControls(camera);
+    controls = new THREE.OrbitControls(camera, element);
     controls.rotateUp(Math.PI / 4);
     controls.target.set(
       camera.position.x + 0.1,
@@ -76,8 +77,8 @@ var camera, scene, renderer;
   }
 
   function resize() {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    var width = container.offsetWidth;
+    var height = container.offsetHeight;
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
