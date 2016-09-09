@@ -50,6 +50,9 @@ function init(){
     }
     setPlayerControls(0);
 
+    var effect = new THREE.VREffect(renderer);
+    effect.setSize(window.innerWidth, window.innerHeight);
+
     // VR stuff
     var effect = new THREE.VREffect(renderer);
     effect.setSize(window.innerWidth, window.innerHeight);
