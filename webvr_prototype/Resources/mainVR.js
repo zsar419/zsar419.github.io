@@ -17,7 +17,7 @@ loadJSON(function(response) {
 });
 
 
-var scene, camera, renderer;
+var scene, camera, renderer, controls;
 var player, model, plane, raycaster, gravitycaster;
 
 var ground_r;
@@ -35,10 +35,8 @@ function init(){
 
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
-var controls = new THREE.VRControls(camera);
-    controls.standing = true;
     
-    var controls = new THREE.VRControls(camera);
+    controls = new THREE.VRControls(camera);
     controls.standing = true;
     var setPlayerControls = function(height){
     }
@@ -100,7 +98,6 @@ var controls = new THREE.VRControls(camera);
     }
     initLights();
 
-    
     setPlaneSettings = function(){
         plane = new THREE.Mesh(	// plane
             new THREE.BoxGeometry(1000*planeControls.scale, 5,1000*planeControls.scale),
