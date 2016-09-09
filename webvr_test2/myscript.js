@@ -28,8 +28,8 @@ function init() {
     camera.position.y,
     camera.position.z
   );
-  //controls.noZoom = true;
-  //controls.noPan = true;
+  controls.noZoom = true;
+  controls.noPan = true;
 
   function setOrientationControls(e) {
     if (!e.alpha) return;
