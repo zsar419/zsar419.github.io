@@ -84,21 +84,13 @@ WebVRConfig = {
 // Only enable it if you actually need to.
 var renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setPixelRatio(window.devicePixelRatio);
-
-// Append the canvas element created by the renderer to document body element.
 document.body.appendChild(renderer.domElement);
 
 // Create a three.js scene.
 var scene = new THREE.Scene();
-
-// Create a three.js camera.
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-
-// Apply VR headset positional data to camera.
 var controls = new THREE.VRControls(camera);
 controls.standing = true;
-
-// Apply VR stereo rendering to renderer.
 var effect = new THREE.VREffect(renderer);
 effect.setSize(window.innerWidth, window.innerHeight);
 
@@ -111,7 +103,6 @@ function onTextureLoaded(texture) {
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(boxSize, boxSize);
-
   var geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
   var material = new THREE.MeshBasicMaterial({
     map: texture,
@@ -123,16 +114,7 @@ function onTextureLoaded(texture) {
   skybox = new THREE.Mesh(geometry, material);
   skybox.position.y = boxSize/2;
   scene.add(skybox);
-
-  // For high end VR devices like Vive and Oculus, take into account the stage
-  // parameters provided.
-  setupStage();
 }
-
-// Create 3D objects.
-var cube = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshNormalMaterial());
-cube.position.set(0, controls.userHeight, -1);
-scene.add(cube);
 
 // Create a VR manager helper to enter and exit VR mode.
 var params = {
@@ -141,8 +123,8 @@ var params = {
 };
 var manager = new WebVRManager(renderer, effect, params);
 
-// Kick off animation loop
-requestAnimationFrame(animate);
+
+
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
@@ -152,25 +134,19 @@ function onResize(e) {
   camera.updateProjectionMatrix();
 }
 
+// Kick off animation loop
+requestAnimationFrame(animate);
 // Request animation frame loop function
 var lastRender = 0;
 function animate(timestamp) {
   var delta = Math.min(timestamp - lastRender, 500);
   lastRender = timestamp;
-
-  // Apply rotation to cube mesh
-  cube.rotation.y += delta * 0.0006;
-
   // Update VR headset position and apply to camera.
   controls.update();
-
   // Render the scene through the manager.
   manager.render(scene, camera, timestamp);
-
   requestAnimationFrame(animate);
 }
-
-
 
 </script>
 
