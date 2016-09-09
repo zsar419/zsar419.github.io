@@ -22,14 +22,15 @@ function init() {
   scene.add(camera);
 
   controls = new THREE.OrbitControls(camera, element);
-  /*controls.rotateUp(Math.PI / 4);
+  controls.rotateUp(Math.PI / 4);
   controls.target.set(
     camera.position.x + 0.1,
     camera.position.y,
     camera.position.z
   );
   controls.noZoom = true;
-  controls.noPan = true;*/
+  controls.noPan = true;
+  console.log("b");
 
   function setOrientationControls(e) {
     if (!e.alpha) return;
