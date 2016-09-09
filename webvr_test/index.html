@@ -21,14 +21,9 @@ body {
 </style>
 </head>
 
-<body>
-
-</body>
+<body></body>
 
 <script>
-/*
- * Debug parameters.
- */
 WebVRConfig = {
   /**
    * webvr-polyfill configuration
@@ -61,11 +56,6 @@ WebVRConfig = {
   //DIRTY_SUBMIT_FRAME_BINDINGS: true // default: false
 };
 </script>
-
-
-<!--
-  three.js 3d library
-  -->
 <script src="node_modules/three/three.js"></script>
 
 <!--
@@ -117,7 +107,6 @@ effect.setSize(window.innerWidth, window.innerHeight);
 var boxSize = 5;
 var loader = new THREE.TextureLoader();
 loader.load('img/box.png', onTextureLoaded);
-
 function onTextureLoaded(texture) {
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
@@ -140,6 +129,10 @@ function onTextureLoaded(texture) {
   setupStage();
 }
 
+// Create 3D objects.
+var cube = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshNormalMaterial());
+cube.position.set(0, controls.userHeight, -1);
+scene.add(cube);
 
 // Create a VR manager helper to enter and exit VR mode.
 var params = {
@@ -148,22 +141,16 @@ var params = {
 };
 var manager = new WebVRManager(renderer, effect, params);
 
-// Create 3D objects.
-var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-var material = new THREE.MeshNormalMaterial();
-var cube = new THREE.Mesh(geometry, material);
-
-// Position cube mesh to be right in front of you.
-cube.position.set(0, controls.userHeight, -1);
-
-// Add cube mesh to your three.js scene
-scene.add(cube);
-
 // Kick off animation loop
 requestAnimationFrame(animate);
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
+function onResize(e) {
+  effect.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+}
 
 // Request animation frame loop function
 var lastRender = 0;
@@ -183,43 +170,7 @@ function animate(timestamp) {
   requestAnimationFrame(animate);
 }
 
-function onResize(e) {
-  effect.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-}
 
-var display;
-
-// Get the HMD, and if we're dealing with something that specifies
-// stageParameters, rearrange the scene.
-function setupStage() {
-  navigator.getVRDisplays().then(function(displays) {
-    if (displays.length > 0) {
-      display = displays[0];
-      if (display.stageParameters) {
-        setStageDimensions(display.stageParameters);
-      }
-    }
-  });
-}
-
-function setStageDimensions(stage) {
-  // Make the skybox fit the stage.
-  var material = skybox.material;
-  scene.remove(skybox);
-
-  // Size the skybox according to the size of the actual stage.
-  var geometry = new THREE.BoxGeometry(stage.sizeX, boxSize, stage.sizeZ);
-  skybox = new THREE.Mesh(geometry, material);
-
-  // Place it on the floor.
-  skybox.position.y = boxSize/2;
-  scene.add(skybox);
-
-  // Place the cube in the middle of the scene, at user height.
-  cube.position.set(0, controls.userHeight, 0);
-}
 
 </script>
 
