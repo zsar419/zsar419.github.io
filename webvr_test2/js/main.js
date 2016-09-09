@@ -38,8 +38,8 @@ function init() {
     controls2.connect();
     controls2.update();
 
-    //element.addEventListener('click', fullscreen, false);
-    //window.removeEventListener('deviceorientation', setOrientationControls, true);
+    element.addEventListener('click', fullscreen, false);
+    window.removeEventListener('deviceorientation', setOrientationControls, true);
   }
   window.addEventListener('deviceorientation', setOrientationControls, true);
 
