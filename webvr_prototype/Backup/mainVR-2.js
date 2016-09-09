@@ -17,7 +17,7 @@ loadJSON(function(response) {
 });
 
 
-var scene, camera, renderer;
+var scene, camera, renderer, controls;
 var player, model, plane, raycaster, gravitycaster;
 
 var ground_r;
@@ -35,18 +35,10 @@ function init(){
 
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
-
-    var controls = new THREE.PointerLockControls( camera );	// Web based controls
+    
+    controls = new THREE.VRControls(camera);
+    controls.standing = true;
     var setPlayerControls = function(height){
-        player = controls.getObject();
-        player.position.set(player_c.pos_x,player_c.pos_y+height,player_c.pos_z);
-        player.rotation.y = player_c.direction/180*Math.PI;
-        player.isFlying = true;
-        player.step = player_c.step_size;
-        scene.add( player );
-
-        lockMousePointer(controls);	
-        addPCControls(); // */
     }
     setPlayerControls(0);
 
@@ -58,18 +50,6 @@ function init(){
     isUndistorted: false // Default: false.
     };
     var manager = new WebVRManager(renderer, effect, params);
-
-    function setOrientationControls(e) {
-        if (!e.alpha) return;
-
-        var controls = new THREE.DeviceOrientationControls(camera, true);
-        controls.connect();
-        controls.update();
-
-        //element.addEventListener('click', fullscreen, false);
-        window.removeEventListener('deviceorientation', setOrientationControls, true);
-    }
-    window.addEventListener('deviceorientation', setOrientationControls, true);
 
     // Collision checking
     var ray_distance = player_c.collision_dist;
@@ -118,7 +98,6 @@ function init(){
     }
     initLights();
 
-    
     setPlaneSettings = function(){
         plane = new THREE.Mesh(	// plane
             new THREE.BoxGeometry(1000*planeControls.scale, 5,1000*planeControls.scale),
@@ -144,9 +123,8 @@ function init(){
                     //child.receiveShadow = true;
                 });
                 scene.add(model);
-                setPlayerControls(30);
                 // Delayed function to fix gravity (fall through floor bug)
-                setTimeout(() => player.isFlying = player_c.fly_mode, 500);
+                // setTimeout(() => player.isFlying = player_c.fly_mode, 500);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
         );
     }
@@ -237,12 +215,12 @@ function init(){
     }
 
     function render() {
-        var pos = player.position.clone();
+        /*var pos = player.position.clone();
         renderPCMovement(player, getForwardCollision(pos), getGravityCollision(pos) );	// Deals with collisions
         player_c.pos_x = player.position.x;
         player_c.pos_y = player.position.y;
         player_c.pos_z = player.position.z;
-        player_c.direction = setLoop(player.rotation.y/Math.PI*180);
+        player_c.direction = setLoop(player.rotation.y/Math.PI*180);*/
 
         lightFollow(d_light);
         lightFollow(s_light1);
@@ -259,7 +237,7 @@ function init(){
         stats.update(); 
 
         // Update VR headset position and apply to camera.
-        // controls.update();
+        controls.update();
         // Render the scene through the manager.
         manager.render(scene, camera, timestamp);
         requestAnimationFrame(animate);

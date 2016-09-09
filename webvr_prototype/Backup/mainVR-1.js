@@ -59,16 +59,6 @@ function init(){
     };
     var manager = new WebVRManager(renderer, effect, params);
 
-    // VR stuff
-    var effect = new THREE.VREffect(renderer);
-    effect.setSize(window.innerWidth, window.innerHeight);
-        // Create a VR manager helper to enter and exit VR mode.
-    var params = {
-    hideButton: false, // Default: false.
-    isUndistorted: false // Default: false.
-    };
-    var manager = new WebVRManager(renderer, effect, params);
-
     // Collision checking
     var ray_distance = player_c.collision_dist;
     var rc_height = player_c.height-2.5;
@@ -151,7 +141,6 @@ function init(){
     function initObjects(){
         setPlaneSettings();
         loadModel(model_c.name);
-        player.position.y +=1;  // making up for loss in height
 
         var cube = new THREE.Mesh(
             new THREE.BoxGeometry(40,40,40),
