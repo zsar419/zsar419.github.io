@@ -42,7 +42,7 @@ function init() {
 
     element.addEventListener('click', fullscreen, false);
 
-    //window.removeEventListener('deviceorientation', setOrientationControls, true);
+    window.removeEventListener('deviceorientation', setOrientationControls, true);
   }
   window.addEventListener('deviceorientation', setOrientationControls, true);
 
