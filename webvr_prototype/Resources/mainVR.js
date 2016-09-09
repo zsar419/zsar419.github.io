@@ -260,9 +260,7 @@ function init(){
         // Update VR headset position and apply to camera.
         // controls.update();
         // Render the scene through the manager.
-        // manager.render(scene, camera, timestamp);
-
-        renderer.render(scene, camera);
+        manager.render(scene, camera, timestamp);
         requestAnimationFrame(animate);
     }
 }
