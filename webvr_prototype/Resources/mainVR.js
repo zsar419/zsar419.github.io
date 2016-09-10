@@ -17,7 +17,7 @@ loadJSON(function(response) {
 });
 
 
-var scene, camera, renderer;
+var scene, camera, renderer, controls;
 var player, model, plane, raycaster, gravitycaster;
 
 var ground_r;
@@ -30,48 +30,11 @@ var setPlaneSettings, loadModel;
 
 function init(){
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,5000);
-    renderer = new THREE.WebGLRenderer({ antialias: true });    // Performance intensive
-
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
-    var controls = new THREE.PointerLockControls( camera );	// Web based controls    
-    var setPlayerControls = function(height){
-        player = controls.getObject();
-        player.position.set(player_c.pos_x,player_c.pos_y+height,player_c.pos_z);
-        player.rotation.y = player_c.direction/180*Math.PI;
-        player.isFlying = true;
-        player.step = player_c.step_size;
-        scene.add( player );
-
-        lockMousePointer(controls);	
-        addPCControls(); // */
-    }
-    setPlayerControls(0);
-
-    var effect = new THREE.VREffect(renderer);
-    effect.setSize(window.innerWidth, window.innerHeight);
-    // Create a VR manager helper to enter and exit VR mode.
-    var params = {
-    hideButton: false, // Default: false.
-    isUndistorted: false // Default: false.
-    };
-    var manager = new WebVRManager(renderer, effect, params);
-
-    // Testing
-    controls.update = () => 0;
-    function setOrientationControls(e) {
-        if (!e.alpha) return;
-
-        var controls = new THREE.DeviceOrientationControls(camera, true);
-        controls.connect();
-        controls.update();
-
-        //element.addEventListener('click', fullscreen, false);
-        window.removeEventListener('deviceorientation', setOrientationControls, true);
-    }
-    window.addEventListener('deviceorientation', setOrientationControls, true);
+    camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,5000);
+    renderer = new THREE.WebGLRenderer();    // Performance intensive
 
     // Collision checking
     var ray_distance = player_c.collision_dist;
@@ -117,10 +80,8 @@ function init(){
         s_light2.castShadow = true;
         s_light2.follow = spotLight2.follow_player;
         if(spotLight2.status) scene.add(s_light2);
-    }
-    initLights();
+    } initLights();
 
-    
     setPlaneSettings = function(){
         plane = new THREE.Mesh(	// plane
             new THREE.BoxGeometry(1000*planeControls.scale, 5,1000*planeControls.scale),
@@ -146,7 +107,6 @@ function init(){
                     //child.receiveShadow = true;
                 });
                 scene.add(model);
-                setPlayerControls(30);
                 // Delayed function to fix gravity (fall through floor bug)
                 setTimeout(() => player.isFlying = player_c.fly_mode, 500);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
@@ -164,10 +124,38 @@ function init(){
         cube.castShadow = true;
         cube.receiveShadow = true;
         scene.add(cube);
+    } initObjects();
+
+    // VR related
+    var effect = new THREE.VREffect(renderer);
+    var controls = new THREE.PointerLockControls( camera );	// Web based controls
+    var setPlayerControls = function(height){
+        player = controls.getObject();
+        player.position.set(player_c.pos_x,player_c.pos_y+height,player_c.pos_z);
+        player.rotation.y = player_c.direction/180*Math.PI;
+        player.isFlying = true;
+        player.step = player_c.step_size;
+        scene.add( player );
+
+        lockMousePointer(controls);	
+        addPCControls(); // 
     }
-    initObjects();
+    setPlayerControls(50);
 
-
+    // VR controls
+    window.addEventListener('deviceorientation', setOrientationControls, true);
+    function setOrientationControls(e) {
+        if (!e.alpha) return;
+        controls = new THREE.DeviceOrientationControls(camera, true);
+        controls.connect(); // */
+        /*controls = new THREE.VRControls(camera);
+        controls.standing = true; // */
+        setInterval(() => controls.update(), 50);
+        window.removeEventListener('deviceorientation', setOrientationControls, true);
+    }
+    var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
+    
+    // Window fullscreen button/effect
     window.addEventListener('resize', onResize, true);
     window.addEventListener('vrdisplaypresentchange', onResize, true);
     function onResize(e) {
@@ -175,7 +163,7 @@ function init(){
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
     }
-
+    
     function getGravityCollision(pos){
         if(player.isFlying) return false;
         var downward = new THREE.Vector3(0, -1, 0);
@@ -230,7 +218,6 @@ function init(){
         else return degrees;
     }
 
-
     function lightFollow(lightsource){player
         if(lightsource.follow){
             lightsource.position.x = player.position.x;;
@@ -257,15 +244,9 @@ function init(){
         var delta = Math.min(timestamp - lastRender, 500);
         lastRender = timestamp;
 
-        // Testing
-        camera.updateProjectionMatrix();
-        controls.update();
-
         render();
         stats.update(); 
 
-        // Update VR headset position and apply to camera.
-        // controls.update();
         // Render the scene through the manager.
         manager.render(scene, camera, timestamp);
         requestAnimationFrame(animate);
