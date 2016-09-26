@@ -131,7 +131,7 @@ function init(){
                 });
                 scene.add(model);
                 // Delayed function to fix gravity (fall through floor bug)
-                setTimeout(() => player.isFlying = player_c.fly_mode, 500);
+                setTimeout(() => player.isFlying = player_c.fly_mode, 1000);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
         );
     }
@@ -171,9 +171,9 @@ function init(){
         if (!e.alpha) return;
         controls = new THREE.DeviceOrientationControls(camera, true);
         controls.connect(); // */
+        controls.object = player;
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
-        player = controls.object;
         setInterval(() => {
             text.innerHTML = player.rotation.y;
             text2.innerHTML = controls.object.rotation.y;
