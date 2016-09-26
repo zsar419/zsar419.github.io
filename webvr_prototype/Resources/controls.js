@@ -13,7 +13,7 @@ function lockMousePointer(controls) {
 	document.body.addEventListener( 'click', function ( event ) {
 		document.body.requestPointerLock();
 	}, false );
-}
+} // */
 
 // Optimize with bits ***
 var moveForward = false;
@@ -76,18 +76,16 @@ function addPCControls(model) {
 				break;
 		}
 	};
-	var mouseMovement;
-	document.addEventListener("mousedown", function(){
-		// mouseMovement = setInterval(() => { console.log("pressing"); }, 100); // the above code is executed every 100 ms
-		moveForward = true;
-	});
-	document.addEventListener("mouseup", function(){
-		moveForward = false;
-		//if (mouseMovement) clearInterval(mouseMovement)
-	});
 	document.addEventListener( 'keydown', onKeyDown, false );
 	document.addEventListener( 'keyup', onKeyUp, false );
-}
+} // */
+
+var mouseMovement = false;
+document.addEventListener("mousedown", function(){
+	mouseMovement = !mouseMovement;
+	moveForward = mouseMovement==true?true:false;
+});
+// document.addEventListener("mouseup", function(){});
 
 // Rendering Movement Changes
 function renderPCMovement(player, collision, g_collision) {
@@ -103,7 +101,7 @@ function renderPCMovement(player, collision, g_collision) {
 	if ( moveLeft ) velocity.x -= 400.0 * delta;
 	if ( moveRight ) velocity.x += 400.0 * delta;
 
-	player.translateX( velocity.x * delta );
+	//player.translateX( velocity.x * delta );
 	player.translateZ( velocity.z * delta );
 
 	if(!player.isFlying) {
@@ -121,6 +119,5 @@ function renderPCMovement(player, collision, g_collision) {
 			}
 		} // */
 	}
-
 	prevTime = time;
 }

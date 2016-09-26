@@ -54,6 +54,28 @@ function init(){
     renderer.shadowMapSoft = true;      // Smoothen shadows
     document.body.appendChild( renderer.domElement );
 
+    // Testing text
+    var text = document.createElement('div');
+    text.style.position = 'absolute';
+    text.style.width = 500;
+    text.style.height = 500;
+    text.style.backgroundColor = "blue";
+    text.innerHTML = "Testing";
+    text.style.top = 100 + 'px';
+    text.style.left = 100 + 'px';
+    document.body.appendChild(text);
+
+    var text2 = document.createElement('div');
+    text2.style.position = 'absolute';
+    text2.style.width = 500;
+    text2.style.height = 500;
+    text2.style.backgroundColor = "red";
+    text2.innerHTML = "Testing";
+    text2.style.top = 150+ 'px';
+    text2.style.left = 100 + 'px';
+    document.body.appendChild(text2);
+    
+
     function initLights(){
         a_light = new THREE.AmbientLight(toHex(ambientLight.color), ambientLight.intensity);
         a_light.color.setHSL( 0.6, 1, 0.6 );
@@ -151,7 +173,12 @@ function init(){
         controls.connect(); // */
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
-        setInterval(() => controls.update(), 15);   // 60 FPS
+        player = controls.object;
+        setInterval(() => {
+            text.innerHTML = player.rotation.y;
+            text2.innerHTML = controls.object.rotation.y;
+            controls.update(); 
+        }, 15);   // 60 FPS
         window.removeEventListener('deviceorientation', setOrientationControls, true);
     }
     var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
@@ -219,12 +246,7 @@ function init(){
         else return degrees;
     }
 
-    function lightFollow(lightsource){player
-        if(lightsource.follow){
-            lightsource.position.x = player.position.x;;
-            lightsource.position.z = player.position.z;
-        }
-    }
+    
 
     function render() {
         var pos = player.position.clone();
@@ -234,9 +256,7 @@ function init(){
         player_c.pos_z = player.position.z;
         player_c.direction = setLoop(player.rotation.y/Math.PI*180);
 
-        lightFollow(d_light);
-        lightFollow(s_light1);
-        lightFollow(s_light2);
+        //console.log(player.rotation.z + " " + camera.rotation.z);
     };
 
     requestAnimationFrame(animate);
