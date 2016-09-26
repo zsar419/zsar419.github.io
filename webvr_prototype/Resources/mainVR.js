@@ -54,6 +54,14 @@ function init(){
     renderer.shadowMapSoft = true;      // Smoothen shadows
     document.body.appendChild( renderer.domElement );
 
+    // Opus logo
+    var img = document.createElement("IMG");
+    img.style.position = 'absolute';
+    img.style.top = 10 + 'px';
+    img.style.left = document.body.clientWidth/2 + 'px';
+    img.src = 'Resources/logo.PNG';
+    document.body.appendChild(img);
+
     // Testing text
     var text = document.createElement('div');
     text.style.position = 'absolute';
@@ -63,7 +71,7 @@ function init(){
     text.innerHTML = "Testing";
     text.style.top = 100 + 'px';
     text.style.left = 100 + 'px';
-    document.body.appendChild(text);
+    //document.body.appendChild(text);
 
     var text2 = document.createElement('div');
     text2.style.position = 'absolute';
@@ -73,7 +81,7 @@ function init(){
     text2.innerHTML = "Testing";
     text2.style.top = 150+ 'px';
     text2.style.left = 100 + 'px';
-    document.body.appendChild(text2);
+    //document.body.appendChild(text2);
     
 
     function initLights(){
@@ -175,8 +183,9 @@ function init(){
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
         setInterval(() => {
-            text.innerHTML = player.rotation.y;
-            text2.innerHTML = controls.object.rotation.y;
+            
+            //text.innerHTML = player.rotation.y;
+            //text2.innerHTML = controls.object.rotation.y;
             controls.update(); 
         }, 15);   // 60 FPS
         window.removeEventListener('deviceorientation', setOrientationControls, true);
