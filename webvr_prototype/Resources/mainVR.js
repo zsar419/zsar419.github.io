@@ -149,6 +149,7 @@ function init(){
         if (!e.alpha) return;
         controls = new THREE.DeviceOrientationControls(camera, true);
         controls.connect(); // */
+        player = controls.getObject();
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
         setInterval(() => controls.update(), 15);   // 60 FPS
