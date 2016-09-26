@@ -9,6 +9,8 @@
     xobj.send(null);  
  }
 
+
+
 loadJSON(function(response) { 
     loadGUI(JSON.parse(response || "{}"));
     init();

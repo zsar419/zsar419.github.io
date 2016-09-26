@@ -76,6 +76,15 @@ function addPCControls(model) {
 				break;
 		}
 	};
+	var mouseMovement;
+	document.addEventListener("mousedown", function(){
+		// mouseMovement = setInterval(() => { console.log("pressing"); }, 100); // the above code is executed every 100 ms
+		moveForward = true;
+	});
+	document.addEventListener("mouseup", function(){
+		moveForward = false;
+		//if (mouseMovement) clearInterval(mouseMovement)
+	});
 	document.addEventListener( 'keydown', onKeyDown, false );
 	document.addEventListener( 'keyup', onKeyUp, false );
 }
