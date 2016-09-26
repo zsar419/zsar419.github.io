@@ -3,14 +3,14 @@
   "remembered": {
     "Default": {
       "0": {
-        "pos_x": -184.38009427729114,
-        "pos_y": 22.500000107940675,
-        "pos_z": -735.4922855742357,
-        "height": 25,
+        "pos_x": -149.0065050188791,
+        "pos_y": 22.64198897108349,
+        "pos_z": -646.7641213410648,
+        "height": 25.141988863142814,
         "jump_velocity": 50,
         "collision_dist": 15,
         "step_size": 10,
-        "direction": -155.9591118346089,
+        "direction": -2324.1693393987707,
         "fov": 75,
         "speed": 10,
         "fly_mode": false
@@ -51,7 +51,7 @@
         "follow_player": false
       },
       "5": {
-        "status": true,
+        "status": false,
         "color": "#ffffff",
         "intensity": 0.5,
         "pos_x": 0,

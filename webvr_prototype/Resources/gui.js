@@ -2,7 +2,7 @@
 /*adds controls to scene*/
 //var gui = new dat.GUI();
 var gui;
-function loadGUI(){
+function loadGUI(settings){
     gui = new dat.GUI({
         load: settings,
         preset: 'Default'

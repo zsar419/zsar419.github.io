@@ -9,10 +9,8 @@
     xobj.send(null);  
  }
 
-var settings;
 loadJSON(function(response) { 
-    settings = JSON.parse(response || "{}"); 
-    loadGUI();
+    loadGUI(JSON.parse(response || "{}"));
     init();
 });
 
@@ -34,7 +32,7 @@ function init(){
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
     camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,5000);
-    renderer = new THREE.WebGLRenderer();    // Performance intensive
+    renderer = new THREE.WebGLRenderer();
 
     // Collision checking
     var ray_distance = player_c.collision_dist;
@@ -42,6 +40,7 @@ function init(){
     raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, ray_distance );
     gravitycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, rc_height );
 
+    // Statistics
     var stats = new Stats();
     document.body.appendChild( stats.domElement );
 
@@ -51,7 +50,6 @@ function init(){
     renderer.setClearColor( toHex(sceneControls.skycolor) );	// Blue background
     renderer.shadowMap.enabled = true;
     renderer.shadowMapSoft = true;      // Smoothen shadows
-    renderer.shadowMap.renderReverseSided = false;
     document.body.appendChild( renderer.domElement );
 
     function initLights(){
@@ -85,7 +83,8 @@ function init(){
     setPlaneSettings = function(){
         plane = new THREE.Mesh(	// plane
             new THREE.BoxGeometry(1000*planeControls.scale, 5,1000*planeControls.scale),
-            new THREE.MeshPhongMaterial( { color: toHex(planeControls.color) } )
+            new THREE.MeshPhongMaterial( { color: toHex(planeControls.color) } )  
+            //new THREE.MeshLambertMaterial( { color: toHex(planeControls.color) } ) // Performance 
         );
         plane.receiveShadow = true;
         plane.position.set(planeControls.pos_x,planeControls.pos_y,planeControls.pos_z);
@@ -103,8 +102,8 @@ function init(){
                 model.scale.set(model_c.scale_x,model_c.scale_y,model_c.scale_z);
                 // Casting shadows for all children
                 model.traverse(function(child) {	// or scene.traverse
-                    child.castShadow = true;
-                    //child.receiveShadow = true;
+                    // child.castShadow = true;
+                    // child.receiveShadow = true;
                 });
                 scene.add(model);
                 // Delayed function to fix gravity (fall through floor bug)
@@ -128,7 +127,7 @@ function init(){
 
     // VR related
     var effect = new THREE.VREffect(renderer);
-    var controls = new THREE.PointerLockControls( camera );	// Web based controls
+    var controls = new THREE.PointerLockControls( camera );	// Web based PC controls
     var setPlayerControls = function(height){
         player = controls.getObject();
         player.position.set(player_c.pos_x,player_c.pos_y+height,player_c.pos_z);
