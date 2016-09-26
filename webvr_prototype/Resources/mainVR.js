@@ -151,7 +151,7 @@ function init(){
         controls.connect(); // */
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
-        setInterval(() => controls.update(), 50);
+        setInterval(() => controls.update(), 15);   // 60 FPS
         window.removeEventListener('deviceorientation', setOrientationControls, true);
     }
     var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
