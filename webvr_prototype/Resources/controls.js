@@ -1,18 +1,9 @@
 // First Person Camera Controls
 function lockMousePointer(controls) {
-	// Functon called when click occurs
-	var pointerlockchange = function ( event ) {
-		if ( document.pointerLockElement === document.body ) 
-			controls.enabled = true;
-		else	// Mouse outside of screen
-			controls.enabled = false;
-	}; 
-	
 	// Hook pointer lock function to document
-	document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-	document.body.addEventListener( 'click', function ( event ) {
-		document.body.requestPointerLock();
-	}, false );
+	document.addEventListener( 'pointerlockchange', (()=>{controls.enabled = document.pointerLockElement === document.body?true:false}), false );
+	document.body.addEventListener( 'click', (()=> {document.body.requestPointerLock()}), false );
+	//document.body.addEventListener( 'click', function ( event ) { document.body.requestPointerLock(); }, false );
 } // */
 
 // Optimize with bits ***
@@ -81,7 +72,7 @@ function addPCControls(model) {
 } // */
 
 var mouseMovement = false;
-document.addEventListener("mousedown", function(){
+document.addEventListener("mousedown", () =>{
 	mouseMovement = !mouseMovement;
 	moveForward = mouseMovement==true?true:false;
 });
@@ -101,7 +92,7 @@ function renderPCMovement(player, collision, g_collision) {
 	if ( moveLeft ) velocity.x -= 400.0 * delta;
 	if ( moveRight ) velocity.x += 400.0 * delta;
 
-	//player.translateX( velocity.x * delta );
+	player.translateX( velocity.x * delta );
 	player.translateZ( velocity.z * delta );
 
 	if(!player.isFlying) {
