@@ -1,26 +1,20 @@
  function loadJSON(callback) {   
     var xobj = new XMLHttpRequest();
-        xobj.overrideMimeType("application/json");
+    xobj.overrideMimeType("application/json");
     xobj.open('GET', './Resources/settings.json', true); // Replace 'my_data' with the path to your file
     xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4) 
-            callback(xobj.responseText);
+        if (xobj.readyState == 4)  callback(xobj.responseText);
     };
     xobj.send(null);  
  }
-
-
 
 loadJSON(function(response) { 
     loadGUI(JSON.parse(response || "{}"));
     init();
 });
 
-
-var scene, camera, renderer, controls;
+var scene, camera, renderer;
 var player, model, plane, raycaster, gravitycaster;
-
-var ground_r;
 
 // Lights
 var a_light, h_light, d_light, s_light1, s_light2;
@@ -33,7 +27,7 @@ function init(){
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
-    camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,5000);
+    camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,player_c.view_distance);
     renderer = new THREE.WebGLRenderer();
 
     // Collision checking
@@ -42,17 +36,53 @@ function init(){
     raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, ray_distance );
     gravitycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(), 0, rc_height );
 
-    // Statistics
+    // Statistics (FPS)
     var stats = new Stats();
     document.body.appendChild( stats.domElement );
 
     // Set renderer settings
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor( toHex(sceneControls.skycolor) );	// Blue background
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMapSoft = true;      // Smoothen shadows
-    document.body.appendChild( renderer.domElement );
+    (function setRendererSettings(){
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor( toHex(sceneControls.skycolor) );	// Blue background
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMapSoft = true;      // Smoothen shadows
+        document.body.appendChild( renderer.domElement );
+    }());
+    
+    (function addOverlay(){
+        // Opus logo
+        var img = document.createElement("IMG");
+        img.style.position = 'absolute';
+        img.style.top = 10 + 'px';
+        img.style.left = document.body.clientWidth/2 + 'px';
+        img.src = 'Resources/logo.PNG';
+        document.body.appendChild(img);
+
+        // Testing text
+        /*var text = document.createElement('div');
+        text.id = "txt_1";
+        text.style.position = 'absolute';
+        text.style.width = 500;
+        text.style.height = 500;
+        text.style.backgroundColor = "blue";
+        text.innerHTML = "debug_text1";
+        text.style.top = 100 + 'px';
+        text.style.left = 100 + 'px';
+        document.body.appendChild(text);
+
+        var text2 = document.createElement('div');
+        text2.id = "txt_2";
+        text2.style.position = 'absolute';
+        text2.style.width = 500;
+        text2.style.height = 500;
+        text2.style.backgroundColor = "red";
+        text2.innerHTML = "debug_text2";
+        text2.style.top = 150+ 'px';
+        text2.style.left = 100 + 'px';
+        document.body.appendChild(text2);*/
+    }());
+    
 
     function initLights(){
         a_light = new THREE.AmbientLight(toHex(ambientLight.color), ambientLight.intensity);
@@ -80,9 +110,9 @@ function init(){
         s_light2.castShadow = true;
         s_light2.follow = spotLight2.follow_player;
         if(spotLight2.status) scene.add(s_light2);
-    } initLights();
+    };
 
-    setPlaneSettings = function(){
+    function setPlaneSettings(){
         plane = new THREE.Mesh(	// plane
             new THREE.BoxGeometry(1000*planeControls.scale, 5,1000*planeControls.scale),
             new THREE.MeshPhongMaterial( { color: toHex(planeControls.color) } )  
@@ -94,7 +124,7 @@ function init(){
         // Create walls
     }
 
-    loadModel = function(name){
+    loadModel =  (name) => {
         var loader = new THREE.ColladaLoader();
         loader.options.convertUpAxis = true;
         loader.load('Model/'+name, function ( collada ) {
@@ -104,19 +134,23 @@ function init(){
                 model.scale.set(model_c.scale_x,model_c.scale_y,model_c.scale_z);
                 // Casting shadows for all children
                 model.traverse(function(child) {	// or scene.traverse
-                    // child.castShadow = true;
-                    // child.receiveShadow = true;
+                    child.castShadow = model_c.cast_shadow;
+                    //child.receiveShadow = model_c.recieve_shadows;
                 });
                 scene.add(model);
                 // Delayed function to fix gravity (fall through floor bug)
-                setTimeout(() => player.isFlying = player_c.fly_mode, 500);
+                setTimeout(() => player.isFlying = player_c.fly_mode, 2000);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
         );
     }
-    function initObjects(){
+    
+
+    (function initSceneObjects(){
+        initLights();
         setPlaneSettings();
         loadModel(model_c.name);
 
+        // Create cube - debugging
         var cube = new THREE.Mesh(
             new THREE.BoxGeometry(40,40,40),
             new THREE.MeshLambertMaterial()
@@ -125,10 +159,9 @@ function init(){
         cube.castShadow = true;
         cube.receiveShadow = true;
         scene.add(cube);
-    } initObjects();
+    }());
 
-    // VR related
-    var effect = new THREE.VREffect(renderer);
+    // PC mouse controls
     var controls = new THREE.PointerLockControls( camera );	// Web based PC controls
     var setPlayerControls = function(height){
         player = controls.getObject();
@@ -144,38 +177,53 @@ function init(){
     setPlayerControls(50);
 
     // VR controls
-    window.addEventListener('deviceorientation', setOrientationControls, true);
+    var effect = new THREE.VREffect(renderer);
+    var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
     function setOrientationControls(e) {
         if (!e.alpha) return;
-        controls = new THREE.DeviceOrientationControls(camera, true);
+        var controls = new THREE.DeviceOrientationControls(camera, true);
         controls.connect(); // */
+        
+        player = controls.object;
+        //player.isFlying = true;
+        //player.rotation.onChange = () => {};
+        //player.rotation.onChangeCallback = () => {};
+
+        // Camera is child of player which rotates aswell
+        // Cannot remove camera from player as it is part of scene
+        // Need to implement probably without player
+        
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
-        setInterval(() => controls.update(), 15);   // 60 FPS
+        setInterval(() => {
+            var vector = camera.getWorldDirection();
+            var theta = -Math.atan2(vector.x,-vector.z);    // Direction from camera
+            //player.rotation.rotateOnAxis(new THREE.Vector3(0,1,0), theta);
+            //player.rotation.y = theta;
+            //document.getElementById("txt_1").innerHTML = toDegs(theta);
+            //document.getElementById("txt_2").innerHTML = toDegs(camera.rotation.y);
+            controls.update(); 
+        }, 15);   // 60 FPS*/
         window.removeEventListener('deviceorientation', setOrientationControls, true);
     }
-    var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
     
     // Window fullscreen button/effect
-    window.addEventListener('resize', onResize, true);
+    window.addEventListener('deviceorientation', setOrientationControls, true);
     window.addEventListener('vrdisplaypresentchange', onResize, true);
+    window.addEventListener('resize', onResize, true);
     function onResize(e) {
         effect.setSize(window.innerWidth, window.innerHeight);
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
     }
     
+    
     function getGravityCollision(pos){
         if(player.isFlying) return false;
         var downward = new THREE.Vector3(0, -1, 0);
         gravitycaster.set( pos , downward);
         var intersectionsGravity = gravitycaster.intersectObjects( scene.children, true );
-        if ( intersectionsGravity.length > 0  ) {
-            ground_r = intersectionsGravity[0];
-            //console.log(ground_r.distance + " " + ground_r.point.y);
-            return true;
-        }
-        return false;
+        return intersectionsGravity.length>0?player_c.height +  intersectionsGravity[0].point.y -2.5:0;
     }
 
     function getForwardCollision(pos){		// Project ray forward only
@@ -191,7 +239,7 @@ function init(){
         if ( intersections.length > 0 ) return true;
 
         // Simple step size based ray caster - for slope/stair traversal
-        pos.y -= (25-player.step);
+        pos.y -= (25-player.step);  // HARDCODED
         raycaster.set( pos , forward);
         var intersections_step = raycaster.intersectObjects( scene.children, true );
         if ( intersections_step.length > 0 ) return true; // */
@@ -219,27 +267,16 @@ function init(){
         else return degrees;
     }
 
-    function lightFollow(lightsource){player
-        if(lightsource.follow){
-            lightsource.position.x = player.position.x;;
-            lightsource.position.z = player.position.z;
-        }
-    }
-
     function render() {
-        var pos = player.position.clone();
-        renderPCMovement(player, getForwardCollision(pos), getGravityCollision(pos) );	// Deals with collisions
+        renderPCMovement(player, getForwardCollision(player.position), getGravityCollision(player.position) );	// Deals with collisions
         player_c.pos_x = player.position.x;
         player_c.pos_y = player.position.y;
         player_c.pos_z = player.position.z;
         player_c.direction = setLoop(player.rotation.y/Math.PI*180);
-
-        lightFollow(d_light);
-        lightFollow(s_light1);
-        lightFollow(s_light2);
+        //console.log(player.rotation.z + " " + camera.rotation.z);
     };
 
-    requestAnimationFrame(animate);
+    /*requestAnimationFrame(animate);
     var lastRender = 0;
     function animate(timestamp) {
         var delta = Math.min(timestamp - lastRender, 500);
@@ -251,5 +288,13 @@ function init(){
         // Render the scene through the manager.
         manager.render(scene, camera, timestamp);
         requestAnimationFrame(animate);
-    }
+    }*/   
+    (function animate() {
+
+        render();
+        stats.update(); 
+        // Render the scene through the manager.
+        manager.render(scene, camera);
+        requestAnimationFrame(animate);
+    }());
 }

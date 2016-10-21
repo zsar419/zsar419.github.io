@@ -15,10 +15,11 @@ var player_c = new function(){
     //this.direction_x = 0;
     this.direction = 0;
     //this.direction_z = 0;
-        // Might need for VR 
+    // Might need for VR 
     this.collision_dist = 15;
     this.step_size = 10;
     this.fov = 75;
+    this.view_distance = 1000;
     this.speed = 10; 
 
     this.fly_mode = false;
@@ -40,7 +41,8 @@ var model_c = new function(){
     this.scale_y = 0.5;
     this.scale_z = 0.5;
 
-    // this.shadows = true;
+    this.cast_shadow = true;
+    this.recieve_shadows = false;
     this.synchronize_scaling = false; // Need to update all elements
 
     this.load_model = function() {};
@@ -87,7 +89,7 @@ var directionalLight = new function(){
 }
 
 var spotLight1 = new function(){
-    this.status = true;
+    this.status = false;
     this.color = "#ffffff";
     this.intensity = 0.5;
     this.pos_x = 0;

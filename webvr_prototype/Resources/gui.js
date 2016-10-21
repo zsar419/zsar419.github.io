@@ -58,7 +58,11 @@ function addPlayerControls(){
         camera.fov = player_c.fov;
         camera.updateProjectionMatrix();
     });
-    playerGui.add( player_c, 'speed', 1,14).onChange(function(){
+    playerGui.add( player_c, 'view_distance', 500,5000).onChange(function(){
+        camera.far = player_c.view_distance;
+        camera.updateProjectionMatrix();
+    });
+    playerGui.add( player_c, 'speed', 1,12).onChange(function(){
         playerSpeed = player_c.speed;
     });
     playerGui.add( player_c, 'fly_mode').onChange(function(){
@@ -97,8 +101,13 @@ function addModelControls(){
         model.rotation.z = toRads(model_c.rot_z);
     });
 
-    modelGui.add( model_c, "synchronize_scaling").onChange(function(){
+    modelGui.add( model_c, "cast_shadow").onChange(function(){
+        model.traverse(function(child) {	// or scene.traverse
+            child.castShadow = model_c.cast_shadow;
+        });
     });
+
+    modelGui.add( model_c, "synchronize_scaling").onChange(function(){});
 
     function synchronize_scale(value){
         model.scale.x = model.scale.y = model.scale.z = value;

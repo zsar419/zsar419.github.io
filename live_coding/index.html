@@ -3,233 +3,36 @@
 		<title>Javascript Live Coding</title>
 		<style>canvas { width: 100%; height: 100% }</style>
 		<link href="styles.css" rel=stylesheet type="text/css">
-		<!-- <script src="js/three.min.js"></script> -->
-		<!-- <script src="js/ObjectLoader.js"></script> -->
-		<script src="http://threejs.org/build/three.min.js"></script>
-		<script src="http://threejs.org/examples/js/loaders/OBJLoader.js"></script>
-		<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
-		<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
-		<script src="http://threejs.org/examples/js/controls/PointerLockControls.js"></script>
-		<script src="http://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+		<script src="ThreeJS/three.min.js"></script>
+		<script src="ThreeJS/ColladaLoader.js"></script>
+		<script src="ThreeJS/PointerLockControls.js"></script>
+		<script src="ThreeJS/stats.min.js"></script>
+
+		<script src="Scripts/MainJS.js"></script>
+		<script src="Scripts/TutorialMethods.js"></script>
+		
+		
 	</head>
 	<body>		
-		<h1><center>Live Coding ~ Real-time Javascript</center></h1>
-		<div id="canvas"></div>
-		<div id="js" style="display:block;" contenteditable>// ALT - toggles editor 
+		<h1><center>Live Coding ~ Real-time WebGL Rendering</center></h1>
+		<div id="jseditor" style="display:block;" contenteditable>// ALT - toggles editor 
 // CTRL - Toggles code implementations
-// ENTER - Executes code</div>
-
-		<script>
-			
-			//var defaultCanvas = document.getElementById("canvas").innerHTML;
-			function cleanResources(){
-				// Delete last script
-				var deleteSetup = document.getElementById("setup");
-				deleteSetup.parentNode.removeChild(deleteSetup);
-				
-				// Deleting previous script
-				var previousScript = document.getElementById("jsExecute");
-				previousScript.parentNode.removeChild(previousScript);
-				
-				// Delete rendering script
-				var deleteRenderer = document.getElementById("rendering");
-				deleteRenderer.parentNode.removeChild(deleteRenderer);
-				
-				// Clear canvas
-				/*var canvas = document.getElementsByTagName("canvas");
-				var gl = canvas.getContext("webgl");
-				gl.getExtension('WEBGL_lose_context').loseContext(); */
-				
-				document.getElementById('canvas').innerHTML = '';
-			}
-		
-			function loadfps(){
-				var script = document.createElement('script');
-				script.innerHTML = 
-				'var stats = new Stats();'
-				+ 'var container = document.getElementById("canvas");'
-				+ 'container.appendChild( stats.domElement );'
-				+ 'function renderFPS() {' + '\n'
-				+ 'requestAnimationFrame(renderFPS);' + '\n'
-				+ 'stats.update();' + '\n'
-				+ '};' + '\n'
-				+ 'renderFPS();';
-				document.body.appendChild( script );
-			}
-			
-			function setupScene(){
-				var setup = document.createElement('script');
-				setup.id = "setup";
-				setup.innerHTML =
-				'var scene = new THREE.Scene();' + '\n'
-				+ 'var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 1,10000);' + '\n'
-				+ 'var renderer = new THREE.WebGLRenderer();' + '\n'
-				+ 'renderer.setSize(window.innerWidth, window.innerHeight);' + '\n'
-				+ 'var container = document.getElementById("canvas");' + '\n'
-				+ 'container.appendChild(renderer.domElement);' + '\n'
-				+ 'function onRender(){};' + '\n'
-				document.body.appendChild( setup );
-			}
-			
-			function createRenderer(){
-				var rendering = document.createElement('script');
-				rendering.id = 'rendering';
-				rendering.innerHTML=
-				'function render() {' + '\n'
-				+ 'requestAnimationFrame(render);' + '\n'
-				+ 'onRender();' + '\n'
-				+ 'renderer.render(scene, camera);' + '\n'
-				+ '}' + '\n'
-				+ 'render();';
-				document.body.appendChild( rendering );
-			}
-			
-			// Create object
-			function createCube(){
-				js = document.getElementById('js');
-				js.innerHTML= '// Setup scene, camera, renderer' + '\n' + '\n'
-				+ "var box = new THREE.Mesh(" + '\n'
-				+ '		new THREE.BoxGeometry(100,100,100),' + '\n'
-				+ '		new THREE.MeshBasicMaterial({color: 0xfffff, wireframe: true})' + '\n'
-				+ ')' + '\n'
-				+ 'scene.add(box);' + '\n';
-			}
-			
-			// Object Animation
-			function animateCube(){
-				createCube();
-				js = document.getElementById('js');
-				js.innerHTML+= '\n'+
-				"camera.position.z = 500;" + '\n'
-				+ 'var onRender = function(){' + '\n'
-				+ '		box.rotation.x += 0.01;' + '\n'
-				+ '		box.rotation.y += 0.01;' + '\n'
-				+ '}' + '\n';
-			}
-			
-			// Object Illumination
-			function illuminate(){
-				js = document.getElementById('js');
-				js.innerHTML= '// Setup scene, camera, renderer' + '\n' + '\n'
-				+ "var box = new THREE.Mesh(" + '\n'
-				+ '		new THREE.BoxGeometry(100,100,100),' + '\n'
-				+ '		new THREE.MeshPhongMaterial()' + '\n'
-				+ ')' + '\n'
-				+ 'scene.add(box);' + '\n';
-				
-				js.innerHTML+= '\n'+
-				'var light = new THREE.PointLight(0x00ff00)' + '\n'
-				+ 'light.position.set(0,0,800);' + '\n'
-				+ 'scene.add(light)' + '\n' + '\n'
-				+ "camera.position.z = 500;" + '\n'
-				+ 'var onRender = function(){' + '\n'
-				+ '		box.rotation.x += 0.01;' + '\n'
-				+ '		box.rotation.y += 0.01;' + '\n'
-				+ '}' + '\n';
-			}
-			
-			// Comparison with complex webgl code
-			function load3(){
-				// Deleting previous script
-				var previousScript = document.getElementById("jsExecute");
-				previousScript.parentNode.removeChild(previousScript);
-				document.getElementById('canvas').innerHTML = '';
-				
-				var script = document.createElement('script');
-				script.id = "jsExecute";
-				script.src = 'webgl_cube.js';
-				document.body.appendChild( script );
-				js = document.getElementById('js');
-				js.innerHTML = "// View webgl cube source for comparison" + '\n'
-				+ '// Add this in html <canvas width = "570" height = "570" id = "my_Canvas"></canvas>';
-			}
-			
-			// Loading DAE model
-			function loadModel(){
-				js = document.getElementById('js');
-				js.innerHTML= '// Setup scene, camera, renderer' + '\n' + '\n'
-				+ "var loader = new THREE.ColladaLoader();" + '\n'
-				+ 'loader.options.convertUpAxis = true;' + '\n'
-				+ 'loader.load("sketchup-demo.dae", function ( collada ) {' + '\n'
-				+ '		var dae = collada.scene;' + '\n'
-				+ '		dae.position.set(-500,0,0);' + '\n'
-				+ '		dae.scale.set(0.5,0.5,0.5);' + '\n'
-				+ '		scene.add(dae);' + '\n'
-				+ '},' + '\n'
-				+ 'function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + "% loaded" );}' + '\n'
-				+ ');' + '\n' + '\n'
-				+ 'var light = new THREE.DirectionalLight(0xffffff);' + '\n'
-				+ 'light.position.set(0, 0, 800);' + '\n'
-				+ 'scene.add(light);' + '\n' + '\n'
-				+ 'camera.position.z = 500;' + '\n';
-			}
-			
-			function orbitalControls(){
-				js = document.getElementById('js');
-				js.innerHTML+= '\n'+
-				"var controls = new THREE.OrbitControls( camera, renderer.domElement );" + '\n';
-			}
-			
-			function executeCode() {
-			// Function which allows code to be executed
-				cleanResources();
-				setupScene();
-				var script = document.createElement("script");
-				script.id = "jsExecute";
-				script.innerHTML = js.innerText;
-				document.body.appendChild(script);
-				
-				createRenderer();
-				
-				//var renderer = document.getElementById('rendering');
-				//document.body.insertBefore(script, renderer);
-			}
-
-			document.onkeydown = checkKey;
-			function checkKey(e) {
-				e = e || window.event;
-				if (e.keyCode == '18'){	// Detect alt keypress
-					if(document.getElementById('js').style.display == 'none')
-						document.getElementById('js').style.display = 'block';
-					else document.getElementById('js').style.display = 'none';
-				}
-				
-				if (e.keyCode == '17'){	// Detect alt keypress
-					if(document.getElementById('loadmenu').style.display == 'none')
-						document.getElementById('loadmenu').style.display = 'block';
-					else document.getElementById('loadmenu').style.display = 'none';
-				}
-				
-				if(e.keyCode == '9') {	// Tab
-					document.execCommand('styleWithCSS', true, null);
-					document.execCommand('indent', true, null);
-					if(e.preventDefault){
-						e.preventDefault()
-					}
-				}
-				
-				if(e.keyCode == '13') {	// Enter
-					executeCode();
-				}
-				
-				
-			}
-		</script>
+// [F2] - Executes code
+		</div>
 		
 		<div id="loadmenu">
 			<ul>
-				<a href='#' onclick="loadfps();"><li>FPS Display</li></a>
 				<a href='#' onclick="createCube();"><li>Create Cube</li></a>
 				<a href='#' onclick="animateCube();"><li>Animate Cube</li></a>
 				<a href='#' onclick="illuminate();"><li>Illuminate Cube</li></a>
 				<br>
-				<a href='#' onclick="load3();"><li>Complex WebGL</li></a>
 				<br>
 				<a href='#' onclick="loadModel();"><li>Load Model</li></a>
-				<a href='#' onclick="orbitalControls();"><li>Add Orbital Controls</li></a>
 			</ul>
 			<p>By Zeeshan Sarwar</p>
 		</div>
+
+		<div id="canvas"></div>
 		<script id="setup"></script>
 		<script id="jsExecute"></script>
 		<script id="rendering"></script>

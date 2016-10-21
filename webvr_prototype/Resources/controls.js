@@ -1,19 +1,10 @@
 // First Person Camera Controls
 function lockMousePointer(controls) {
-	// Functon called when click occurs
-	var pointerlockchange = function ( event ) {
-		if ( document.pointerLockElement === document.body ) 
-			controls.enabled = true;
-		else	// Mouse outside of screen
-			controls.enabled = false;
-	}; 
-	
 	// Hook pointer lock function to document
-	document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-	document.body.addEventListener( 'click', function ( event ) {
-		document.body.requestPointerLock();
-	}, false );
-}
+	document.addEventListener( 'pointerlockchange', (()=>{controls.enabled = document.pointerLockElement === document.body?true:false}), false );
+	document.body.addEventListener( 'click', (()=> {document.body.requestPointerLock()}), false );
+	//document.body.addEventListener( 'click', function ( event ) { document.body.requestPointerLock(); }, false );
+} // */
 
 // Optimize with bits ***
 var moveForward = false;
@@ -24,6 +15,7 @@ var canJump = false;
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
 function addPCControls(model) {
+	// Also add pointerlock controls here too (called in one place)
 	// Declare actions on buttons
 	var onKeyDown = function ( event ) {
 		switch ( event.keyCode ) {
@@ -76,21 +68,19 @@ function addPCControls(model) {
 				break;
 		}
 	};
-	var mouseMovement;
-	document.addEventListener("mousedown", function(){
-		// mouseMovement = setInterval(() => { console.log("pressing"); }, 100); // the above code is executed every 100 ms
-		moveForward = true;
-	});
-	document.addEventListener("mouseup", function(){
-		moveForward = false;
-		//if (mouseMovement) clearInterval(mouseMovement)
-	});
 	document.addEventListener( 'keydown', onKeyDown, false );
 	document.addEventListener( 'keyup', onKeyUp, false );
-}
+} // */
+
+var mouseMovement = false;
+document.addEventListener("mousedown", () =>{
+	mouseMovement = !mouseMovement;
+	moveForward = mouseMovement&!player.isFlying==true?true:false;
+});
+// document.addEventListener("mouseup", function(){});
 
 // Rendering Movement Changes
-function renderPCMovement(player, collision, g_collision) {
+function renderPCMovement(player, collision, ground_ray_height) {
 	var time = performance.now();
 	var playerSpeed = 1600-(player_c.speed*100); // 400~1500
 	var delta = ( time - prevTime ) / playerSpeed;
@@ -111,16 +101,13 @@ function renderPCMovement(player, collision, g_collision) {
 		velocity.y -= 9.8 * 10 * delta; // 10.0 = mass
 		player.translateY( velocity.y * delta );
 		// Ground collision
-		if ( g_collision ){
-			var ground_ray_height = player_c.height + ground_r.point.y -2.5;
-			//ground_ray_height += ground_r.point.y>-1?ground_r.point.y:0;
+		if(ground_ray_height){
 			if( player.position.y <= ground_ray_height ) {	// height based
 				velocity.y = 0;
 				player.position.y = ground_ray_height;
 				canJump = true;
 			}
-		} // */
+		}
 	}
-
 	prevTime = time;
 }
