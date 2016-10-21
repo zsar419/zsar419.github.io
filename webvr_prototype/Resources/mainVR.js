@@ -27,11 +27,7 @@ function init(){
     scene.fog = new THREE.Fog( 0xffffff, 1, 2500 );
     scene.fog.color.setHSL( 0.6, 0, 1 );
 
-<<<<<<< HEAD
     camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,player_c.view_distance);
-=======
-    camera = new THREE.PerspectiveCamera(player_c.fov, window.innerWidth/window.innerHeight, 1,1000);
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
     renderer = new THREE.WebGLRenderer();
 
     // Collision checking
@@ -64,11 +60,7 @@ function init(){
         document.body.appendChild(img);
 
         // Testing text
-<<<<<<< HEAD
-        /*var text = document.createElement('div');
-=======
-        var text = document.createElement('div');
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
+        /*var text = document.createElement('div')
         text.id = "txt_1";
         text.style.position = 'absolute';
         text.style.width = 500;
@@ -88,11 +80,8 @@ function init(){
         text2.innerHTML = "debug_text2";
         text2.style.top = 150+ 'px';
         text2.style.left = 100 + 'px';
-<<<<<<< HEAD
         document.body.appendChild(text2);*/
-=======
-        document.body.appendChild(text2);
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
+
     }());
     
 
@@ -136,11 +125,7 @@ function init(){
         // Create walls
     }
 
-<<<<<<< HEAD
     loadModel =  (name) => {
-=======
-    function loadModel(name){
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
         var loader = new THREE.ColladaLoader();
         loader.options.convertUpAxis = true;
         loader.load('Model/'+name, function ( collada ) {
@@ -155,18 +140,10 @@ function init(){
                 });
                 scene.add(model);
                 // Delayed function to fix gravity (fall through floor bug)
-<<<<<<< HEAD
                 setTimeout(() => player.isFlying = player_c.fly_mode, 2000);
             }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
         );
     }
-    
-=======
-                setTimeout(() => player.isFlying = player_c.fly_mode, 1000);
-            }, function ( xhr ) {console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );}
-        );
-    }
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
 
     (function initSceneObjects(){
         initLights();
@@ -184,11 +161,7 @@ function init(){
         scene.add(cube);
     }());
 
-<<<<<<< HEAD
     // PC mouse controls
-=======
-    // VR related
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
     var controls = new THREE.PointerLockControls( camera );	// Web based PC controls
     var setPlayerControls = function(height){
         player = controls.getObject();
@@ -209,9 +182,7 @@ function init(){
     function setOrientationControls(e) {
         if (!e.alpha) return;
         var controls = new THREE.DeviceOrientationControls(camera, true);
-        controls.connect(); // */
-<<<<<<< HEAD
-        
+        controls.connect(); // */        
         player = controls.object;
         //player.isFlying = true;
         //player.rotation.onChange = () => {};
@@ -232,16 +203,6 @@ function init(){
             //document.getElementById("txt_2").innerHTML = toDegs(camera.rotation.y);
             controls.update(); 
         }, 15);   // 60 FPS*/
-=======
-        controls.object = player;
-        /*controls = new THREE.VRControls(camera);
-        controls.standing = true; // */
-        setInterval(() => {
-            document.getElementById("txt_1").innerHTML = player.rotation.y;
-            document.getElementById("txt_2").innerHTML = controls.object.rotation.y;
-            controls.update(); 
-        }, 15);   // 60 FPS
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
         window.removeEventListener('deviceorientation', setOrientationControls, true);
     }
     
@@ -261,15 +222,7 @@ function init(){
         var downward = new THREE.Vector3(0, -1, 0);
         gravitycaster.set( pos , downward);
         var intersectionsGravity = gravitycaster.intersectObjects( scene.children, true );
-<<<<<<< HEAD
         return intersectionsGravity.length>0?player_c.height +  intersectionsGravity[0].point.y -2.5:0;
-=======
-        if ( intersectionsGravity.length > 0  ) {
-            ground_r = intersectionsGravity[0];
-            return true;
-        }
-        return false;
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
     }
 
     function getForwardCollision(pos){		// Project ray forward only
@@ -319,11 +272,6 @@ function init(){
         player_c.pos_y = player.position.y;
         player_c.pos_z = player.position.z;
         player_c.direction = setLoop(player.rotation.y/Math.PI*180);
-<<<<<<< HEAD
-=======
-
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
-        //console.log(player.rotation.z + " " + camera.rotation.z);
     };
 
     /*requestAnimationFrame(animate);
@@ -343,10 +291,6 @@ function init(){
 
         render();
         stats.update(); 
-<<<<<<< HEAD
-=======
-
->>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
         // Render the scene through the manager.
         manager.render(scene, camera);
         requestAnimationFrame(animate);
