@@ -75,7 +75,11 @@ function addPCControls(model) {
 var mouseMovement = false;
 document.addEventListener("mousedown", () =>{
 	mouseMovement = !mouseMovement;
+<<<<<<< HEAD
 	moveForward = mouseMovement&!player.isFlying==true?true:false;
+=======
+	moveForward = mouseMovement==true?true:false;
+>>>>>>> 772f8a52ba8e49db127fc0d494bb6cd788ad77df
 });
 // document.addEventListener("mouseup", function(){});
 
