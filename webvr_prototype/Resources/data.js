@@ -26,10 +26,10 @@ var player_c = new function(){
 }
 
 var model_c = new function(){
-    this.name = 'sketchup-demo.dae';
+    this.name = ''; // 'sketchup-demo.dae';
     this.load_time = 2;
 
-    this.pos_x = -500;
+    this.pos_x = 0;
     this.pos_y = 0;
     this.pos_z = 0;
 
@@ -43,14 +43,13 @@ var model_c = new function(){
 
     this.cast_shadow = true;
     this.recieve_shadows = false;
-    this.synchronize_scaling = false; // Need to update all elements
+    this.synchronize_scaling = true;
 
     this.load_model = function() {};
 }
 
 var sceneControls = new function(){
     this.skycolor = "#1E90FF";  // Need to fix color picker
-    //renderer.setClearColor( scene.fog.color );  // Choose colour
 }
 
 var planeControls = new function(){
@@ -59,7 +58,7 @@ var planeControls = new function(){
     this.pos_x = 0;
     this.pos_y = -5;
     this.pos_z = 0;
-    this.scale = 5;
+    this.scale = 1;
 }
 
 var ambientLight = new function(){
@@ -69,7 +68,7 @@ var ambientLight = new function(){
 }
 
 var hemisphereLight = new function(){
-    this.status = true;
+    this.status = false;
     this.skycolor = "#ffffff";
     this.groundcolor = "#ffffff";
     this.intensity = 0.5;

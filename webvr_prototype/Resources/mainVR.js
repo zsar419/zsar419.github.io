@@ -50,7 +50,8 @@ function init(){
         document.body.appendChild( renderer.domElement );
     }());
     
-    (function addOverlay(){
+    (function addOverlay()
+    {
         // Opus logo
         var img = document.createElement("IMG");
         img.style.position = 'absolute';
@@ -115,17 +116,19 @@ function init(){
 
     function setPlaneSettings(){
         plane = new THREE.Mesh(	// plane
-            new THREE.BoxGeometry(1000*planeControls.scale, 5,1000*planeControls.scale),
+            new THREE.BoxGeometry(500, 5,500),
             new THREE.MeshPhongMaterial( { color: toHex(planeControls.color) } )  
             //new THREE.MeshLambertMaterial( { color: toHex(planeControls.color) } ) // Performance 
         );
         plane.receiveShadow = true;
         plane.position.set(planeControls.pos_x,planeControls.pos_y,planeControls.pos_z);
+        plane.scale.set( planeControls.scale, 1, planeControls.scale);
         if(planeControls.status) scene.add(plane);
         // Create walls
     }
 
-    loadModel =  (name) => {
+    loadModel =  (name) => 
+    {
         var loader = new THREE.ColladaLoader();
         loader.options.convertUpAxis = true;
         loader.load('Model/'+name, function ( collada ) {
@@ -148,11 +151,12 @@ function init(){
     (function initSceneObjects(){
         initLights();
         setPlaneSettings();
-        loadModel(model_c.name);
+        if(model_c.name === '') setTimeout(() => player.isFlying = player_c.fly_mode, 2000);
+        else loadModel(model_c.name);
 
         // Create cube - debugging
         var cube = new THREE.Mesh(
-            new THREE.BoxGeometry(40,40,40),
+            new THREE.BoxGeometry(20,20,20),
             new THREE.MeshLambertMaterial()
         )
         cube.position.set(0, 50,-100);
@@ -179,8 +183,10 @@ function init(){
     // VR controls
     var effect = new THREE.VREffect(renderer);
     var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
-    function setOrientationControls(e) {
+    function setOrientationControls(e) 
+    {
         if (!e.alpha) return;
+        addMobileMovement();
         var controls = new THREE.DeviceOrientationControls(camera, true);
         controls.connect(); // */        
         player = controls.object;

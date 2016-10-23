@@ -22,6 +22,8 @@ function loadGUI(settings){
     addModelControls();
     addLightControls();
     addSceneControls();
+
+    gui.closed = true;
 }
 
 function addPlayerControls(){
@@ -76,6 +78,7 @@ function addModelControls(){
     var modelGui = gui.addFolder('Model');
     modelGui.add( model_c, 'name');
     modelGui.add( model_c, 'load_model').onChange(function(){
+        player.isFlying = true;
         scene.remove(model);
         loadModel(model_c.name);
     });
@@ -109,21 +112,23 @@ function addModelControls(){
 
     modelGui.add( model_c, "synchronize_scaling").onChange(function(){});
 
+
+    var max_scale = 100;
     function synchronize_scale(value){
         model.scale.x = model.scale.y = model.scale.z = value;
         model_c.scale_x = model_c.scale_y = model_c.scale_z = value;
     }
-    modelGui.add( model_c, "scale_x", 0.1,5).listen().onChange(function(){
+    modelGui.add( model_c, "scale_x", 0.1,max_scale).listen().onChange(function(){
         if(model_c.synchronize_scaling)
             synchronize_scale(model_c.scale_x);
         else model.scale.x = model_c.scale_x;
     });
-    modelGui.add( model_c, "scale_y", 0.1,5).listen().onChange(function(){
+    modelGui.add( model_c, "scale_y", 0.1,max_scale).listen().onChange(function(){
         if(model_c.synchronize_scaling)
             synchronize_scale(model_c.scale_y);
         else model.scale.y = model_c.scale_y;
     });
-    modelGui.add( model_c, "scale_z", 0.1,5).listen().onChange(function(){
+    modelGui.add( model_c, "scale_z", 0.1,max_scale).listen().onChange(function(){
         if(model_c.synchronize_scaling)
             synchronize_scale(model_c.scale_z);
         else model.scale.z = model_c.scale_z;
@@ -189,9 +194,6 @@ function addLightControls(){
     dLight.add( directionalLight, "pos_z",-2000,2000).onChange(function(){
         d_light.position.z = directionalLight.pos_z;
     });
-    dLight.add(directionalLight, "follow_player").onChange(function(){
-        d_light.follow = directionalLight.follow_player;
-    });
     
     // Spotlight 1
     sLight.add(spotLight1, "status").onChange(function(){
@@ -213,10 +215,6 @@ function addLightControls(){
     sLight.add( spotLight1, "pos_z",-2000,2000).onChange(function(){
         s_light1.position.z = spotLight1.pos_z;
     });
-    sLight.add(spotLight1, "follow_player").onChange(function(){
-        s_light1.follow = spotLight1.follow_player;
-    });
-
     
 
     // Spotlight 2
@@ -239,19 +237,12 @@ function addLightControls(){
     sLight2.add( spotLight2, "pos_z",-2000,2000).onChange(function(){
         s_light2.position.z = spotLight2.pos_z;
     });
-    sLight2.add(spotLight1, "follow_player").onChange(function(){
-        s_light2.follow = spotLight2.follow_player;
-    });
-
-    // Print light data
-    //lightGui.add( ..., '...');
-    //lightGui.add( lightControls, 'get_light_data');
 
 }
 
 function addSceneControls(){
     var sceneGui = gui.addFolder('Scene');
-    sceneGui.add( sceneControls, 'skycolor').onChange(function(){
+    sceneGui.addColor( sceneControls, 'skycolor').onChange(function(){
         renderer.setClearColor( toHex(sceneControls.skycolor) );	// Blue background
     });
 
@@ -273,8 +264,7 @@ function addSceneControls(){
         plane.position.z = planeControls.pos_z;
     });
     planeGUI.add( planeControls, "scale", 1,10).onChange(function(){
-        scene.remove(plane);
-        setPlaneSettings();
+        plane.scale.set( planeControls.scale, 1, planeControls.scale);
     });
 
 }

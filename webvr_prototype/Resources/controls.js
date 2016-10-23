@@ -3,7 +3,6 @@ function lockMousePointer(controls) {
 	// Hook pointer lock function to document
 	document.addEventListener( 'pointerlockchange', (()=>{controls.enabled = document.pointerLockElement === document.body?true:false}), false );
 	document.body.addEventListener( 'click', (()=> {document.body.requestPointerLock()}), false );
-	//document.body.addEventListener( 'click', function ( event ) { document.body.requestPointerLock(); }, false );
 } // */
 
 // Optimize with bits ***
@@ -73,10 +72,13 @@ function addPCControls(model) {
 } // */
 
 var mouseMovement = false;
-document.addEventListener("mousedown", () =>{
-	mouseMovement = !mouseMovement;
-	moveForward = mouseMovement&!player.isFlying==true?true:false;
-});
+function addMobileMovement(){
+	document.addEventListener("mousedown", () =>{
+		mouseMovement = !mouseMovement;
+		moveForward = mouseMovement&!player.isFlying==true?true:false;
+	});
+}
+
 // document.addEventListener("mouseup", function(){});
 
 // Rendering Movement Changes
