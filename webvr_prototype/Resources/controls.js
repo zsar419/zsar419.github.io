@@ -75,7 +75,7 @@ var mouseMovement = false;
 function addMobileMovement(){
 	document.addEventListener("mousedown", () =>{
 		mouseMovement = !mouseMovement;
-		moveForward = mouseMovement&!player.isFlying==true?true:false;
+		moveForward = mouseMovement;//&!player.isFlying==true?true:false;
 	});
 }
 

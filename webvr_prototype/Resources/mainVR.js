@@ -183,34 +183,26 @@ function init(){
     // VR controls
     var effect = new THREE.VREffect(renderer);
     var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
-    function setOrientationControls(e) 
-    {
+    function setOrientationControls(e) {
         if (!e.alpha) return;
         addMobileMovement();
-        var controls = new THREE.DeviceOrientationControls(camera, true);
+        var controls = new THREE.DeviceOrientationControls(camera);
         controls.connect(); // */        
-        player = controls.object;
-        //player.isFlying = true;
-        //player.rotation.onChange = () => {};
-        //player.rotation.onChangeCallback = () => {};
+        controls.object = player;
+        player.isFlying = true;
 
-        // Camera is child of player which rotates aswell
-        // Cannot remove camera from player as it is part of scene
-        // Need to implement probably without player
-        
         /*controls = new THREE.VRControls(camera);
         controls.standing = true; // */
         setInterval(() => {
-            var vector = camera.getWorldDirection();
-            var theta = -Math.atan2(vector.x,-vector.z);    // Direction from camera
-            //player.rotation.rotateOnAxis(new THREE.Vector3(0,1,0), theta);
-            //player.rotation.y = theta;
+            //var vector = camera.getWorldDirection();
+            //var theta = -Math.atan2(vector.x,-vector.z);    // Direction from camera
             //document.getElementById("txt_1").innerHTML = toDegs(theta);
             //document.getElementById("txt_2").innerHTML = toDegs(camera.rotation.y);
             controls.update(); 
-        }, 15);   // 60 FPS*/
+        }, 15);   // 60 FPS
         window.removeEventListener('deviceorientation', setOrientationControls, true);
     }
+
     
     // Window fullscreen button/effect
     window.addEventListener('deviceorientation', setOrientationControls, true);
