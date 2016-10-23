@@ -3,33 +3,33 @@
   "remembered": {
     "Default": {
       "0": {
-        "pos_x": -190.3483589089193,
-        "pos_y": 22.64198897108349,
-        "pos_z": -734.8762864076076,
-        "height": 25.141988863142814,
+        "pos_x": -117.28182983753628,
+        "pos_y": 27.413671599718114,
+        "pos_z": -400.36794981900965,
+        "height": 32.413671599718114,
         "jump_velocity": 50,
         "collision_dist": 15,
         "step_size": 10,
-        "direction": -169.8013512466719,
+        "direction": -545.6170909837754,
         "fov": 75,
         "view_distance": 1000,
         "speed": 10,
         "fly_mode": false
       },
       "1": {
-        "name": "sketchup-demo.dae",
+        "name": "array_house.dae",
         "load_time": 2,
-        "pos_x": -500,
+        "pos_x": 0,
         "pos_y": 0,
         "pos_z": 0,
         "rot_x": 0,
-        "rot_y": 0,
+        "rot_y": 87.3478994043358,
         "rot_z": 0,
         "cast_shadow": true,
-        "synchronize_scaling": false,
-        "scale_x": 0.5,
-        "scale_y": 0.5,
-        "scale_z": 0.5
+        "synchronize_scaling": true,
+        "scale_x": 26.542591365130754,
+        "scale_y": 26.542591365130754,
+        "scale_z": 26.542591365130754
       },
       "2": {
         "status": false,
@@ -76,7 +76,7 @@
         "pos_x": 0,
         "pos_y": -5,
         "pos_z": 0,
-        "scale": 5
+        "scale": 6.656959294586149
       }
     }
   },
@@ -84,17 +84,17 @@
   "folders": {
     "Player": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {}
     },
     "Model": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {}
     },
     "Lights": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {
         "Ambient_Light": {
           "preset": "Default",
@@ -125,11 +125,11 @@
     },
     "Scene": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {
         "Plane": {
           "preset": "Default",
-          "closed": true,
+          "closed": false,
           "folders": {}
         }
       }
